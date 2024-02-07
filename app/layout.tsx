@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Providers } from "./provider/providers";
 import { fonts } from "./fonts";
+import { ColorModeScript } from "@chakra-ui/react";
+import { theme } from "./theme";
 
 export const metadata: Metadata = {
   title: "Chat reddit web app",
@@ -10,13 +12,22 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  analytics,
+  team,
 }: {
   children: React.ReactNode;
+  analytics: React.ReactNode;
+  team: React.ReactNode;
 }) {
   return (
     <html lang="en">
       <body className={fonts.inter.className}>
-        <Providers>{children}</Providers>
+        <ColorModeScript initialColorMode={theme.initialColorMode} />
+        <Providers>
+          {children}
+          {analytics}
+          {team}
+        </Providers>
       </body>
     </html>
   );

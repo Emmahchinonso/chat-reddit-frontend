@@ -1,29 +1,42 @@
 "use client";
-import {
-  Box,
-  Button,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Input,
-} from "@chakra-ui/react";
-import { Field, Form, Formik } from "formik";
+import { Box, Button } from "@chakra-ui/react";
+import { Form, Formik } from "formik";
 import React from "react";
 import Wrapper from "../components/Wrapper";
 import InputField from "../components/InputField";
+import { gql, useMutation } from "urql";
 
 interface RegisterProps {}
 
 const Register: RegisterProps = ({}) => {
+  const registerUser = gql`
+    mutation Register($username: String!, $password: String!) {
+      register(options: { username: $username, password: $password }) {
+        errors {
+          field
+          message
+        }
+        user {
+          createdAt
+          id
+          updatedAt
+          username
+        }
+      }
+    }
+  `;
+  const [{ fetching }, register] = useMutation(registerUser);
+
   return (
     <Wrapper variant="small">
       <Formik
         initialValues={{ username: "", password: "" }}
-        onSubmit={(values, actions) => {
-          console.log(values);
+        onSubmit={async (values, helpers) => {
+          const response = await register(values);
+          helpers.resetForm();
         }}
       >
-        {({ values, handleChange, isSubmitting }) => (
+        {({ isSubmitting }) => (
           <Form>
             <InputField
               name="username"
@@ -40,7 +53,7 @@ const Register: RegisterProps = ({}) => {
               required
             />
             <Button
-              isLoading={isSubmitting}
+              isLoading={fetching || isSubmitting}
               colorScheme="teal"
               type="submit"
               mt={4}
