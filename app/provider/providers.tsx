@@ -18,6 +18,9 @@ const client = new Client({
   exchanges: [cacheExchange, fetchExchange],
   fetchOptions: {
     credentials: "include",
+    headers: {
+      "x-forwarded-proto": "https",
+    },
   },
 });
 

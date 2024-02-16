@@ -5,35 +5,27 @@ import React from "react";
 import Wrapper from "../components/Wrapper";
 import InputField from "../components/InputField";
 import { gql, useMutation } from "urql";
+import { useRegisterMutation } from "../generate/graphql";
+import { toErrormap } from "../utils/toErrorMap";
+import { useRouter } from "next/navigation";
+import { routes } from "../constants/routes";
 
 interface RegisterProps {}
 
 const Register: RegisterProps = ({}) => {
-  const registerUser = gql`
-    mutation Register($username: String!, $password: String!) {
-      register(options: { username: $username, password: $password }) {
-        errors {
-          field
-          message
-        }
-        user {
-          createdAt
-          id
-          updatedAt
-          username
-        }
-      }
-    }
-  `;
-  const [{ fetching }, register] = useMutation(registerUser);
-
+  const [{ fetching }, register] = useRegisterMutation();
+  const router = useRouter();
   return (
     <Wrapper variant="small">
       <Formik
         initialValues={{ username: "", password: "" }}
-        onSubmit={async (values, helpers) => {
+        onSubmit={async (values, { setErrors }) => {
           const response = await register(values);
-          helpers.resetForm();
+          if (response.data?.register.errors) {
+            setErrors(toErrormap(response.data.register.errors));
+          } else if (response.data?.register.user) {
+            router.push(routes.home);
+          }
         }}
       >
         {({ isSubmitting }) => (
@@ -42,7 +34,6 @@ const Register: RegisterProps = ({}) => {
               name="username"
               placeholder="username"
               label="Username"
-              required
             />
             <Box mt={4} />
             <InputField
@@ -50,7 +41,6 @@ const Register: RegisterProps = ({}) => {
               placeholder="password"
               label="Password"
               type="password"
-              required
             />
             <Button
               isLoading={fetching || isSubmitting}

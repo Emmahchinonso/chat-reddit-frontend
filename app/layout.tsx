@@ -12,22 +12,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-  analytics,
-  team,
 }: {
   children: React.ReactNode;
-  analytics: React.ReactNode;
-  team: React.ReactNode;
 }) {
   return (
     <html lang="en">
       <body className={fonts.inter.className}>
         <ColorModeScript initialColorMode={theme.initialColorMode} />
-        <Providers>
-          {children}
-          {analytics}
-          {team}
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
