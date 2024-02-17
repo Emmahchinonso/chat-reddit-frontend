@@ -107,9 +107,31 @@ export type UserResponse = {
   user?: Maybe<User>;
 };
 
+export type LoginMutationVariables = Exact<{
+  options: UserNamePassword;
+}>;
+
+export type LoginMutation = {
+  __typename?: "Mutation";
+  login: {
+    __typename?: "UserResponse";
+    errors?: Array<{
+      __typename?: "FieldError";
+      field: string;
+      message: string;
+    }> | null;
+    user?: {
+      __typename?: "User";
+      createdAt: string;
+      id: number;
+      updatedAt: string;
+      username: string;
+    } | null;
+  };
+};
+
 export type RegisterMutationVariables = Exact<{
-  username: Scalars["String"]["input"];
-  password: Scalars["String"]["input"];
+  options: UserNamePassword;
 }>;
 
 export type RegisterMutation = {
@@ -131,6 +153,99 @@ export type RegisterMutation = {
   };
 };
 
+export type MeQueryVariables = Exact<{ [key: string]: never }>;
+
+export type MeQuery = {
+  __typename?: "Query";
+  me?: { __typename?: "User"; id: number; username: string } | null;
+};
+
+export const LoginDocumentType = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "Login" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "options" },
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "UserNamePassword" },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "login" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "options" },
+                value: {
+                  kind: "Variable",
+                  name: { kind: "Name", value: "options" },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "errors" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "field" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "message" },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "user" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "createdAt" },
+                      },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "updatedAt" },
+                      },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "username" },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;
 export const RegisterDocumentType = {
   kind: "Document",
   definitions: [
@@ -143,27 +258,13 @@ export const RegisterDocumentType = {
           kind: "VariableDefinition",
           variable: {
             kind: "Variable",
-            name: { kind: "Name", value: "username" },
+            name: { kind: "Name", value: "options" },
           },
           type: {
             kind: "NonNullType",
             type: {
               kind: "NamedType",
-              name: { kind: "Name", value: "String" },
-            },
-          },
-        },
-        {
-          kind: "VariableDefinition",
-          variable: {
-            kind: "Variable",
-            name: { kind: "Name", value: "password" },
-          },
-          type: {
-            kind: "NonNullType",
-            type: {
-              kind: "NamedType",
-              name: { kind: "Name", value: "String" },
+              name: { kind: "Name", value: "UserNamePassword" },
             },
           },
         },
@@ -179,25 +280,8 @@ export const RegisterDocumentType = {
                 kind: "Argument",
                 name: { kind: "Name", value: "options" },
                 value: {
-                  kind: "ObjectValue",
-                  fields: [
-                    {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "username" },
-                      value: {
-                        kind: "Variable",
-                        name: { kind: "Name", value: "username" },
-                      },
-                    },
-                    {
-                      kind: "ObjectField",
-                      name: { kind: "Name", value: "password" },
-                      value: {
-                        kind: "Variable",
-                        name: { kind: "Name", value: "password" },
-                      },
-                    },
-                  ],
+                  kind: "Variable",
+                  name: { kind: "Name", value: "options" },
                 },
               },
             ],
@@ -248,10 +332,56 @@ export const RegisterDocumentType = {
     },
   ],
 } as unknown as DocumentNode<RegisterMutation, RegisterMutationVariables>;
+export const MeDocumentType = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "Me" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "me" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "username" } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<MeQuery, MeQueryVariables>;
 
+export const LoginDocument = gql`
+  mutation Login($options: UserNamePassword!) {
+    login(options: $options) {
+      errors {
+        field
+        message
+      }
+      user {
+        createdAt
+        id
+        updatedAt
+        username
+      }
+    }
+  }
+`;
+
+export function useLoginMutation() {
+  return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
+}
 export const RegisterDocument = gql`
-  mutation Register($username: String!, $password: String!) {
-    register(options: { username: $username, password: $password }) {
+  mutation Register($options: UserNamePassword!) {
+    register(options: $options) {
       errors {
         field
         message
@@ -270,4 +400,21 @@ export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(
     RegisterDocument
   );
+}
+export const MeDocument = gql`
+  query Me {
+    me {
+      id
+      username
+    }
+  }
+`;
+
+export function useMeQuery(
+  options?: Omit<Urql.UseQueryArgs<MeQueryVariables>, "query">
+) {
+  return Urql.useQuery<MeQuery, MeQueryVariables>({
+    query: MeDocument,
+    ...options,
+  });
 }
