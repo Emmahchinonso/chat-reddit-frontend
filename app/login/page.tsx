@@ -4,10 +4,10 @@ import { Form, Formik } from "formik";
 import React from "react";
 import Wrapper from "../components/Wrapper";
 import InputField from "../components/InputField";
-import { useLoginMutation } from "../generate/graphql";
 import { toErrormap } from "../utils/toErrorMap";
 import { useRouter } from "next/navigation";
 import { routes } from "../constants/routes";
+import { useLoginMutation } from "../generate/hooks";
 
 interface LoginProps {}
 

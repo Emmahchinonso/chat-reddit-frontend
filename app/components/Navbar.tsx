@@ -2,10 +2,13 @@
 import { Link } from "@chakra-ui/next-js";
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import React from "react";
-import { useMeQuery } from "../generate/graphql";
+import { useMeQuery } from "../generate/hooks";
+import { useFragment } from "../generate";
+import { RegularUserFragmentDoc } from "../generate/graphql";
 
 const Navbar = () => {
   const [{ data, fetching }] = useMeQuery();
+  const user = useFragment(RegularUserFragmentDoc, data?.me);
 
   let body: any;
   if (fetching) {
@@ -25,7 +28,7 @@ const Navbar = () => {
     body = (
       <Flex gap={3}>
         <Text fontSize="md" color="black" fontWeight="medium">
-          {data?.me.username}
+          {user?.username}
         </Text>
         <Button variant="link" color="black">
           Logout

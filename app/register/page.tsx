@@ -4,10 +4,11 @@ import { Form, Formik } from "formik";
 import React from "react";
 import Wrapper from "../components/Wrapper";
 import InputField from "../components/InputField";
-import { useRegisterMutation } from "../generate/graphql";
+
 import { toErrormap } from "../utils/toErrorMap";
 import { useRouter } from "next/navigation";
 import { routes } from "../constants/routes";
+import { useRegisterMutation } from "../generate/hooks";
 
 interface RegisterProps {}
 
