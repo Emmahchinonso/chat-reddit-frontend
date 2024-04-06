@@ -1,21 +1,34 @@
 import { useMutation, useQuery } from "urql";
-import { graphql } from ".";
-import { loginDocument, meDocument, registerDocument } from "./documents";
 import {
+  LoginDocument,
   LoginMutation,
   LoginMutationVariables,
+  LogoutDocument,
+  MeDocument,
   MeQuery,
   MeQueryVariables,
+  RegisterDocument,
+  RegisterMutation,
+  RegisterMutationVariables,
 } from "./graphql";
+import * as Urql from "urql";
 
 export const useLoginMutation = () => {
-  return useMutation(loginDocument);
+  return useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
 };
 
 export const useRegisterMutation = () => {
-  return useMutation(registerDocument);
+  return useMutation<RegisterMutation, RegisterMutationVariables>(
+    RegisterDocument
+  );
 };
 
-export const useMeQuery = () => {
-  return useQuery<MeQuery, MeQueryVariables>({ query: meDocument });
+export const useMeQuery = (
+  options?: Omit<Urql.UseQueryArgs<MeQueryVariables>, "query">
+) => {
+  return useQuery<MeQuery, MeQueryVariables>({ query: MeDocument, ...options });
+};
+
+export const useLogoutMutation = () => {
+  return useMutation(LogoutDocument);
 };
