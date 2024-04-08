@@ -2,11 +2,12 @@
 import { Link } from "@chakra-ui/next-js";
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import React from "react";
-import { useMeQuery } from "../generate/hooks";
+import { useLogoutMutation, useMeQuery } from "../generate/hooks";
 import { useFragment } from "../generate";
 import { RegularUserFragmentDoc } from "../generate/graphql";
 
 const Navbar = () => {
+  const [{ fetching: isLoggingOut }, logout] = useLogoutMutation();
   const [{ data, fetching }] = useMeQuery();
   const user = useFragment(RegularUserFragmentDoc, data?.me);
 
@@ -30,7 +31,12 @@ const Navbar = () => {
         <Text fontSize="md" color="black" fontWeight="medium">
           {user?.username}
         </Text>
-        <Button variant="link" color="black">
+        <Button
+          isLoading={isLoggingOut}
+          onClick={() => logout({})}
+          variant="link"
+          color="black"
+        >
           Logout
         </Button>
       </Flex>

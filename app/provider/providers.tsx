@@ -18,6 +18,7 @@ import {
   LoginMutation,
   MeQuery,
   RegisterMutation,
+  LogoutMutation,
 } from "../generate/graphql";
 import { devtoolsExchange } from "@urql/devtools";
 
@@ -48,6 +49,14 @@ const client = new Client({
                 ...data,
                 me: result.register.user,
               };
+            });
+          },
+          logout(result: LogoutMutation, args, cache, info) {
+            cache.updateQuery({ query: MeDocument }, (data: MeQuery | null) => {
+              if (result.logout) {
+                return { me: null };
+              }
+              return data;
             });
           },
         },
