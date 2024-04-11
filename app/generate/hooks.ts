@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "urql";
+import { useMutation, useQuery } from "@urql/next";
 import {
   LoginDocument,
   LoginMutation,

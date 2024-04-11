@@ -16,13 +16,14 @@
     "@emotion/styled": "^11.11.0",
     "@urql/devtools": "^2.0.3",
     "@urql/exchange-graphcache": "^6.5.0",
+    "@urql/next": "^1.1.1",
     "formik": "^2.4.5",
     "framer-motion": "^10.16.16",
     "graphql": "^16.8.1",
     "next": "14.0.4",
     "react": "^18",
     "react-dom": "^18",
-    "urql": "^4.0.6"
+    "urql": "^4.0.7"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "5.0.2",
