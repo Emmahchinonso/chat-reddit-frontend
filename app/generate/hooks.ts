@@ -4,9 +4,12 @@ import {
   LoginMutation,
   LoginMutationVariables,
   LogoutDocument,
+  LogoutMutation,
+  LogoutMutationVariables,
   MeDocument,
   MeQuery,
   MeQueryVariables,
+  PostsDocument,
   RegisterDocument,
   RegisterMutation,
   RegisterMutationVariables,
@@ -30,5 +33,9 @@ export const useMeQuery = (
 };
 
 export const useLogoutMutation = () => {
-  return useMutation(LogoutDocument);
+  return useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
+};
+
+export const usePostsQuery = () => {
+  return useQuery({ query: PostsDocument });
 };
