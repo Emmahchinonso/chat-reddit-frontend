@@ -1,10 +1,11 @@
 import Navbar from "./components/Navbar";
 import { PostsDocument } from "./generate/graphql";
-import { getClient } from "./provider/providers";
+import { getClient } from "./utils/getServerClients";
 
 export default async function Home() {
   const result = await getClient().query(PostsDocument, {});
   const posts = result.data?.posts;
+
   return (
     <main>
       <Navbar />

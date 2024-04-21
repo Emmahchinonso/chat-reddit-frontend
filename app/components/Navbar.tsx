@@ -1,7 +1,7 @@
 "use client";
 import { Link } from "@chakra-ui/next-js";
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
-import React from "react";
+import React, { Suspense } from "react";
 import { useLogoutMutation, useMeQuery } from "../generate/hooks";
 import { useFragment } from "../generate";
 import { RegularUserFragmentDoc } from "../generate/graphql";
@@ -10,6 +10,7 @@ const Navbar = () => {
   const [{ fetching: isLoggingOut }, logout] = useLogoutMutation();
   const [{ data, fetching }] = useMeQuery();
   const user = useFragment(RegularUserFragmentDoc, data?.me);
+  console.log("mequery ==>", data, user, fetching);
 
   let body: any;
   if (fetching) {
@@ -44,9 +45,11 @@ const Navbar = () => {
   }
 
   return (
-    <Flex bg="tan" p={4}>
-      <Box ml="auto">{body}</Box>
-    </Flex>
+    <Suspense>
+      <Flex bg="tan" p={4}>
+        <Box ml="auto">{body}</Box>
+      </Flex>
+    </Suspense>
   );
 };
 

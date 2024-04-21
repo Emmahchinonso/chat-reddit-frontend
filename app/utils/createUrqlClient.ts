@@ -73,14 +73,13 @@ const createUrqlClient = ({
       ...exchanges!,
       fetchExchange,
     ],
-
+    ...otherOptions,
     fetchOptions: {
       credentials: "include",
       headers: {
         "x-forwarded-proto": "https",
       },
     },
-    ...otherOptions,
   });
 };
 

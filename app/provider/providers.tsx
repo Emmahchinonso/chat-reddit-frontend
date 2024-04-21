@@ -5,21 +5,10 @@ import {
   localStorageManager,
 } from "@chakra-ui/react";
 import { theme } from "../theme";
-import { cacheExchange, createClient, fetchExchange, gql } from "@urql/core";
 import { UrqlProvider, ssrExchange } from "@urql/next";
+
 import { useMemo } from "react";
 import createUrqlClient from "../utils/createUrqlClient";
-import { registerUrql } from "@urql/next/rsc";
-
-const makeClient = () => {
-  return createClient({
-    url: "https://trygql.formidable.dev/graphql/basic-pokedex",
-    exchanges: [cacheExchange, fetchExchange],
-  });
-};
-
-// for server components
-export const { getClient } = registerUrql(makeClient);
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [client, ssr] = useMemo(() => {
