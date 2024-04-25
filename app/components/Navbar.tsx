@@ -10,12 +10,11 @@ const Navbar = () => {
   const [{ fetching: isLoggingOut }, logout] = useLogoutMutation();
   const [{ data, fetching }] = useMeQuery();
   const user = useFragment(RegularUserFragmentDoc, data?.me);
-  console.log("mequery ==>", data, user, fetching);
 
   let body: any;
   if (fetching) {
     body = null;
-  } else if (!data?.me) {
+  } else if (!user) {
     body = (
       <>
         <Link href="/login" color="white" mr={4}>
