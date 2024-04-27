@@ -8,6 +8,11 @@ import { toErrormap } from "../utils/toErrorMap";
 import { useRouter } from "next/navigation";
 import { routes } from "../constants/routes";
 import { useLoginMutation } from "../generate/hooks";
+import { useFragment } from "../generate";
+import {
+  RegularErrorFragmentDoc,
+  RegularUserFragmentDoc,
+} from "../generate/graphql";
 
 interface LoginProps {}
 
@@ -20,9 +25,17 @@ const Login: LoginProps = ({}) => {
         initialValues={{ usernameOrEmail: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
           const response = await login(values);
-          if (response.data?.login.errors) {
-            setErrors(toErrormap(response.data.login.errors));
-          } else if (response.data?.login.user) {
+          const errors = useFragment(
+            RegularErrorFragmentDoc,
+            response.data?.login.errors
+          );
+          const user = useFragment(
+            RegularUserFragmentDoc,
+            response.data?.login.user
+          );
+          if (errors) {
+            setErrors(toErrormap(errors));
+          } else if (user) {
             router.push(routes.home);
           }
         }}

@@ -1,5 +1,8 @@
 import { useMutation, useQuery } from "@urql/next";
 import {
+  ChangePasswordDocument,
+  ChangePasswordMutation,
+  ChangePasswordMutationVariables,
   LoginDocument,
   LoginMutation,
   LoginMutationVariables,
@@ -10,6 +13,8 @@ import {
   MeQuery,
   MeQueryVariables,
   PostsDocument,
+  PostsQuery,
+  PostsQueryVariables,
   RegisterDocument,
   RegisterMutation,
   RegisterMutationVariables,
@@ -36,6 +41,14 @@ export const useLogoutMutation = () => {
   return useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
 };
 
-export const usePostsQuery = () => {
-  return useQuery({ query: PostsDocument });
+export const useChangePasswordMutation = () => {
+  return useMutation<ChangePasswordMutation, ChangePasswordMutationVariables>(
+    ChangePasswordDocument
+  );
+};
+
+export const usePostsQuery = (
+  options?: Omit<Urql.UseQueryArgs<PostsQueryVariables>, "query">
+) => {
+  return useQuery<PostsQuery, PostsQueryVariables>({ query: PostsDocument });
 };

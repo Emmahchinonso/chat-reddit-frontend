@@ -9,6 +9,11 @@ import { toErrormap } from "../utils/toErrorMap";
 import { useRouter } from "next/navigation";
 import { routes } from "../constants/routes";
 import { useRegisterMutation } from "../generate/hooks";
+import {
+  RegularErrorFragmentDoc,
+  RegularUserFragmentDoc,
+} from "../generate/graphql";
+import { useFragment } from "../generate";
 
 interface RegisterProps {}
 
@@ -21,9 +26,17 @@ const Register: RegisterProps = ({}) => {
         initialValues={{ email: "", username: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
           const response = await register({ options: values });
-          if (response.data?.register.errors) {
-            setErrors(toErrormap(response.data.register.errors));
-          } else if (response.data?.register.user) {
+          const errors = useFragment(
+            RegularErrorFragmentDoc,
+            response.data?.register.errors
+          );
+          const user = useFragment(
+            RegularUserFragmentDoc,
+            response.data?.register.user
+          );
+          if (errors) {
+            setErrors(toErrormap(errors));
+          } else if (user) {
             router.push(routes.home);
           }
         }}
