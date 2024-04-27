@@ -12,6 +12,7 @@ import { useFragment } from "../generate";
 import {
   RegularErrorFragmentDoc,
   RegularUserFragmentDoc,
+  RegularUserResponseFragmentDoc,
 } from "../generate/graphql";
 
 interface LoginProps {}
@@ -25,14 +26,12 @@ const Login: LoginProps = ({}) => {
         initialValues={{ usernameOrEmail: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
           const response = await login(values);
-          const errors = useFragment(
-            RegularErrorFragmentDoc,
-            response.data?.login.errors
+          const dataResponse = useFragment(
+            RegularUserResponseFragmentDoc,
+            response.data?.login
           );
-          const user = useFragment(
-            RegularUserFragmentDoc,
-            response.data?.login.user
-          );
+          const user = dataResponse?.user;
+          const errors = dataResponse?.errors;
           if (errors) {
             setErrors(toErrormap(errors));
           } else if (user) {

@@ -12,6 +12,7 @@ import { useRegisterMutation } from "../generate/hooks";
 import {
   RegularErrorFragmentDoc,
   RegularUserFragmentDoc,
+  RegularUserResponseFragmentDoc,
 } from "../generate/graphql";
 import { useFragment } from "../generate";
 
@@ -26,14 +27,12 @@ const Register: RegisterProps = ({}) => {
         initialValues={{ email: "", username: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
           const response = await register({ options: values });
-          const errors = useFragment(
-            RegularErrorFragmentDoc,
-            response.data?.register.errors
+          const dataResponse = useFragment(
+            RegularUserResponseFragmentDoc,
+            response.data?.register
           );
-          const user = useFragment(
-            RegularUserFragmentDoc,
-            response.data?.register.user
-          );
+          const user = dataResponse?.user;
+          const errors = dataResponse?.errors;
           if (errors) {
             setErrors(toErrormap(errors));
           } else if (user) {
