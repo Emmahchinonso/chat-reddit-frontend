@@ -1,5 +1,5 @@
 "use client";
-import { Box, Button } from "@chakra-ui/react";
+import { Box, Button, Link } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import React from "react";
 import Wrapper from "../components/Wrapper";
@@ -53,6 +53,18 @@ const Login: LoginProps = ({}) => {
               label="Password"
               type="password"
             />
+            <Link
+              href="/forgot-password
+                "
+              textDecorationLine="underline"
+              textUnderlineOffset="2px"
+              display="block"
+              mt={2}
+              fontSize={14}
+              color="grey"
+            >
+              Forgot password?
+            </Link>
             <Button
               isLoading={fetching || isSubmitting}
               colorScheme="teal"

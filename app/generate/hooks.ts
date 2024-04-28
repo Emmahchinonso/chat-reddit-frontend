@@ -3,6 +3,9 @@ import {
   ChangePasswordDocument,
   ChangePasswordMutation,
   ChangePasswordMutationVariables,
+  ForgotPasswordDocument,
+  ForgotPasswordMutation,
+  ForgotPasswordMutationVariables,
   LoginDocument,
   LoginMutation,
   LoginMutationVariables,
@@ -47,8 +50,17 @@ export const useChangePasswordMutation = () => {
   );
 };
 
+export const useForgotPasswordMutation = () => {
+  return useMutation<ForgotPasswordMutation, ForgotPasswordMutationVariables>(
+    ForgotPasswordDocument
+  );
+};
+
 export const usePostsQuery = (
   options?: Omit<Urql.UseQueryArgs<PostsQueryVariables>, "query">
 ) => {
-  return useQuery<PostsQuery, PostsQueryVariables>({ query: PostsDocument });
+  return useQuery<PostsQuery, PostsQueryVariables>({
+    query: PostsDocument,
+    ...options,
+  });
 };
