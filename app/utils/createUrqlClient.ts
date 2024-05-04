@@ -11,8 +11,10 @@ import {
   MeQuery,
   RegisterMutation,
   LogoutMutation,
+  RegularUserResponseFragmentDoc,
 } from "../generate/graphql";
 import { devtoolsExchange } from "@urql/devtools";
+import { useFragment } from "../generate";
 
 const createUrqlClient = ({
   exchanges,
@@ -29,43 +31,51 @@ const createUrqlClient = ({
         updates: {
           Mutation: {
             login(result: LoginMutation, args, cache, info) {
-              cache.updateQuery(
-                { query: MeDocument },
-                (data: MeQuery | null) => {
-                  if (result.login.errors) {
-                    return data;
-                  }
-                  return {
-                    ...data,
-                    me: result.login.user,
-                  };
-                }
+              const login = useFragment(
+                RegularUserResponseFragmentDoc,
+                result.login
               );
+              // cache.updateQuery(
+              //   { query: MeDocument },
+              //   (data: MeQuery | null) => {
+              //     const login = useFragment(
+              //       RegularUserResponseFragmentDoc,
+              //       result.login
+              //     );
+
+              //     if (login.errors) {
+              //       return data;
+              //     }
+              //     return {
+              //       ...data,
+              //       me: login.user,
+              //     };
+              //   }
+              // );
+
+              cache.invalidate("Query", "me");
             },
             register(result: RegisterMutation, args, cache, info) {
-              cache.updateQuery(
-                { query: MeDocument },
-                (data: MeQuery | null) => {
-                  if (result.register.errors) {
-                    return data;
-                  }
-                  return {
-                    ...data,
-                    me: result.register.user,
-                  };
-                }
-              );
+              // cache.updateQuery(
+              //   { query: MeDocument },
+              //   (data: MeQuery | null) => {
+              //     const register = useFragment(
+              //       RegularUserResponseFragmentDoc,
+              //       result.register
+              //     );
+              //     if (register.errors) {
+              //       return data;
+              //     }
+              //     return {
+              //       ...data,
+              //       me: register.user,
+              //     };
+              //   }
+              // );
+              cache.invalidate("Query", "me");
             },
             logout(result: LogoutMutation, args, cache, info) {
-              cache.updateQuery(
-                { query: MeDocument },
-                (data: MeQuery | null) => {
-                  if (result.logout) {
-                    return { me: null };
-                  }
-                  return data;
-                }
-              );
+              cache.invalidate("Query", "me");
             },
           },
         },

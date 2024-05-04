@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Navbar from "./components/Navbar";
 import { PostsDocument } from "./generate/graphql";
 import { getClient } from "./utils/getServerClients";
@@ -8,7 +9,9 @@ export default async function Home() {
 
   return (
     <main>
-      <Navbar />
+      <Suspense>
+        <Navbar />
+      </Suspense>
       <br />
       <p>Hello world</p>
       {posts ? (

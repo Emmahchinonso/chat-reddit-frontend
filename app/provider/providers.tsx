@@ -9,22 +9,25 @@ import { UrqlProvider, ssrExchange } from "@urql/next";
 
 import { useMemo } from "react";
 import createUrqlClient from "../utils/createUrqlClient";
+import { IS_CLIENT } from "../constants";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [client, ssr] = useMemo(() => {
     const ssr = ssrExchange({
-      isClient: typeof window !== "undefined",
+      isClient: IS_CLIENT,
     });
 
     const client = createUrqlClient({
       exchanges: [ssr],
       otherOptions: {
-        suspense: true,
+        // suspense: true,
       },
     });
 
     return [client, ssr];
   }, []);
+
+  const data = JSON.stringify(ssr.extractData());
 
   return (
     <UrqlProvider client={client} ssr={ssr}>
