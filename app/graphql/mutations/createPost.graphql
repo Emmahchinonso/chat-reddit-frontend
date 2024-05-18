@@ -1,0 +1,11 @@
+mutation CreatePost($postRequest: CreatePostRequest!) {
+  createPost(postRequest: $postRequest) {
+    authorId
+    createdAt
+    id
+    points
+    text
+    title
+    updatedAt
+  }
+}

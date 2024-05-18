@@ -4,6 +4,8 @@ import { Providers } from "./provider/providers";
 import { fonts } from "./fonts";
 import { ColorModeScript } from "@chakra-ui/react";
 import { theme } from "./theme";
+import Navbar from "./components/Navbar";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Chat reddit web app",
@@ -18,8 +20,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={fonts.inter.className}>
-        <ColorModeScript initialColorMode={theme.initialColorMode} />
-        <Providers>{children}</Providers>
+        <ColorModeScript
+          type="cookie"
+          initialColorMode={theme.initialColorMode}
+        />
+        <Providers>
+          <Suspense>
+            <Navbar />
+          </Suspense>
+          {children}
+        </Providers>
       </body>
     </html>
   );

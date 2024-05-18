@@ -3,6 +3,9 @@ import {
   ChangePasswordDocument,
   ChangePasswordMutation,
   ChangePasswordMutationVariables,
+  CreatePostDocument,
+  CreatePostMutation,
+  CreatePostMutationVariables,
   ForgotPasswordDocument,
   ForgotPasswordMutation,
   ForgotPasswordMutationVariables,
@@ -53,6 +56,12 @@ export const useChangePasswordMutation = () => {
 export const useForgotPasswordMutation = () => {
   return useMutation<ForgotPasswordMutation, ForgotPasswordMutationVariables>(
     ForgotPasswordDocument
+  );
+};
+
+export const useCreatePostMutation = () => {
+  return useMutation<CreatePostMutation, CreatePostMutationVariables>(
+    CreatePostDocument
   );
 };
 

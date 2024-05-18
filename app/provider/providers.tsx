@@ -1,26 +1,43 @@
 "use client";
 import {
   ChakraProvider,
+  cookieStorageManager,
   CSSReset,
-  localStorageManager,
 } from "@chakra-ui/react";
 import { theme } from "../theme";
-import { UrqlProvider, ssrExchange } from "@urql/next";
+import { Exchange, UrqlProvider, ssrExchange } from "@urql/next";
 
 import { useMemo } from "react";
 import createUrqlClient from "../utils/createUrqlClient";
 import { IS_CLIENT } from "../constants";
+import { useRouter } from "next/navigation";
+import { pipe, tap } from "wonka";
+import { apiErrors } from "../utils/apiErros";
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
   const [client, ssr] = useMemo(() => {
     const ssr = ssrExchange({
       isClient: IS_CLIENT,
     });
 
+    const errorExchange: Exchange =
+      ({ forward }) =>
+      (ops$) => {
+        return pipe(
+          forward(ops$),
+          tap(({ error }) => {
+            if (error?.message === apiErrors.IS_NOT_AUTHENTICATED) {
+              router.replace("/login");
+            }
+          })
+        );
+      };
+
     const client = createUrqlClient({
-      exchanges: [ssr],
+      exchanges: [errorExchange, ssr],
       otherOptions: {
-        // suspense: true,
+        suspense: true,
       },
     });
 
@@ -31,7 +48,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <UrqlProvider client={client} ssr={ssr}>
-      <ChakraProvider colorModeManager={localStorageManager} theme={theme}>
+      <ChakraProvider colorModeManager={cookieStorageManager} theme={theme}>
         <CSSReset />
         {children}
       </ChakraProvider>

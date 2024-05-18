@@ -22,68 +22,63 @@ const Login: LoginProps = ({}) => {
   const [{ fetching }, login] = useLoginMutation();
   const router = useRouter();
   return (
-    <>
-      <Suspense fallback={<>Loading...</>}>
-        <Navbar />
-      </Suspense>
-      <Wrapper variant="small">
-        <Formik
-          initialValues={{ usernameOrEmail: "", password: "" }}
-          onSubmit={async (values, { setErrors }) => {
-            const response = await login(values);
-            const dataResponse = useFragment(
-              RegularUserResponseFragmentDoc,
-              response.data?.login
-            );
-            const user = dataResponse?.user;
-            const errors = dataResponse?.errors;
-            if (errors) {
-              setErrors(toErrormap(errors));
-            } else if (user) {
-              router.push(routes.home);
-              router.refresh();
-            }
-          }}
-        >
-          {({ isSubmitting }) => (
-            <Form>
-              <InputField
-                name="usernameOrEmail"
-                placeholder="username or email"
-                label="username or email"
-              />
-              <Box mt={4} />
-              <InputField
-                name="password"
-                placeholder="password"
-                label="Password"
-                type="password"
-              />
-              <Link
-                href="/forgot-password
+    <Wrapper variant="small">
+      <Formik
+        initialValues={{ usernameOrEmail: "", password: "" }}
+        onSubmit={async (values, { setErrors }) => {
+          const response = await login(values);
+          const dataResponse = useFragment(
+            RegularUserResponseFragmentDoc,
+            response.data?.login
+          );
+          const user = dataResponse?.user;
+          const errors = dataResponse?.errors;
+          if (errors) {
+            setErrors(toErrormap(errors));
+          } else if (user) {
+            router.push(routes.home);
+            router.refresh();
+          }
+        }}
+      >
+        {({ isSubmitting }) => (
+          <Form>
+            <InputField
+              name="usernameOrEmail"
+              placeholder="username or email"
+              label="username or email"
+            />
+            <Box mt={4} />
+            <InputField
+              name="password"
+              placeholder="password"
+              label="Password"
+              type="password"
+            />
+            <Link
+              href="/forgot-password
                 "
-                textDecorationLine="underline"
-                textUnderlineOffset="2px"
-                display="block"
-                mt={2}
-                fontSize={14}
-                color="grey"
-              >
-                Forgot password?
-              </Link>
-              <Button
-                isLoading={fetching || isSubmitting}
-                colorScheme="teal"
-                type="submit"
-                mt={4}
-              >
-                Login
-              </Button>
-            </Form>
-          )}
-        </Formik>
-      </Wrapper>
-    </>
+              textDecorationLine="underline"
+              textUnderlineOffset="2px"
+              display="block"
+              mt={2}
+              fontSize={14}
+              color="grey"
+            >
+              Forgot password?
+            </Link>
+            <Button
+              isLoading={fetching || isSubmitting}
+              colorScheme="teal"
+              type="submit"
+              mt={4}
+            >
+              Login
+            </Button>
+          </Form>
+        )}
+      </Formik>
+    </Wrapper>
   );
 };
 

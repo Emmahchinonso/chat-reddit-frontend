@@ -5,16 +5,14 @@ import React from "react";
 import { useLogoutMutation, useMeQuery } from "../generate/hooks";
 import { useFragment } from "../generate";
 import { RegularUserFragmentDoc } from "../generate/graphql";
-import { useRouter } from "next/navigation";
 import { IS_CLIENT } from "../constants";
 
 const Navbar = () => {
   const [{ fetching: isLoggingOut }, logout] = useLogoutMutation();
-  const [{ data, fetching, stale }] = useMeQuery({
+  const [{ data, fetching }] = useMeQuery({
     pause: !IS_CLIENT,
   });
   const user = useFragment(RegularUserFragmentDoc, data?.me);
-  const router = useRouter();
 
   let body: any;
   if (fetching) {
@@ -51,8 +49,6 @@ const Navbar = () => {
   return (
     <Flex bg="tan" p={4}>
       <Link href="/">Home</Link>
-      <Link href="/login">login</Link>
-      <Link href="/register">register</Link>
       <Box ml="auto">{body}</Box>
     </Flex>
   );

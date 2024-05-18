@@ -6,7 +6,7 @@ import { useFragment } from "@/app/generate";
 import { RegularUserResponseFragmentDoc } from "@/app/generate/graphql";
 import { useChangePasswordMutation } from "@/app/generate/hooks";
 import { toErrormap } from "@/app/utils/toErrorMap";
-import { Alert, AlertIcon, Box, Button, Flex, Link } from "@chakra-ui/react";
+import { Box, Button, Flex, Link } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";

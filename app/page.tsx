@@ -9,9 +9,6 @@ export default async function Home() {
 
   return (
     <main>
-      <Suspense>
-        <Navbar />
-      </Suspense>
       <br />
       <p>Hello world</p>
       {posts ? (
