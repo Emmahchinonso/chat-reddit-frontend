@@ -7,7 +7,7 @@ import {
 import { theme } from "../theme";
 import { Exchange, UrqlProvider, ssrExchange } from "@urql/next";
 
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 import createUrqlClient from "../utils/createUrqlClient";
 import { IS_CLIENT } from "../constants";
 import { useRouter } from "next/navigation";
@@ -18,7 +18,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [client, ssr] = useMemo(() => {
     const ssr = ssrExchange({
-      isClient: IS_CLIENT,
+      isClient: IS_CLIENT(),
     });
 
     const errorExchange: Exchange =
@@ -47,11 +47,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
   const data = JSON.stringify(ssr.extractData());
 
   return (
-    <UrqlProvider client={client} ssr={ssr}>
-      <ChakraProvider colorModeManager={cookieStorageManager} theme={theme}>
-        <CSSReset />
-        {children}
-      </ChakraProvider>
-    </UrqlProvider>
+    <Suspense>
+      <UrqlProvider client={client} ssr={ssr}>
+        <ChakraProvider colorModeManager={cookieStorageManager} theme={theme}>
+          <CSSReset />
+          {children}
+        </ChakraProvider>
+      </UrqlProvider>
+    </Suspense>
   );
 }

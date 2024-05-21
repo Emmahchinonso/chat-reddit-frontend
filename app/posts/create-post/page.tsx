@@ -1,16 +1,23 @@
 "use client";
-import React from "react";
-import Wrapper from "../components/Wrapper";
+import React, { useEffect } from "react";
+import Wrapper from "../../components/Wrapper";
 import { Box, Button } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
-import InputField from "../components/InputField";
-import { useCreatePostMutation } from "../generate/hooks";
+import InputField from "../../components/InputField";
+import { useCreatePostMutation, useMeQuery } from "../../generate/hooks";
 import { useRouter } from "next/navigation";
-import { apiErrors } from "../utils/apiErros";
+import { apiErrors } from "../../utils/apiErros";
+import { routes } from "@/app/constants/routes";
+import useCheckAuthState from "@/app/hooks/useAuth";
+import { useFragment } from "@/app/generate";
+import { RegularUserFragmentDoc } from "@/app/generate/graphql";
+import { IS_CLIENT } from "@/app/constants";
 
 const Page = () => {
+  useCheckAuthState();
   const router = useRouter();
   const [, createPost] = useCreatePostMutation();
+
   return (
     <Wrapper variant="small">
       <Formik
@@ -19,7 +26,7 @@ const Page = () => {
           const { error } = await createPost({ postRequest: values });
           console.log("error ==>", error?.message);
           if (!error) {
-            router.push("/");
+            router.push(routes.home);
           }
         }}
       >

@@ -1,7 +1,7 @@
 "use client";
 import { Box, Button, Link } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
-import React, { Suspense } from "react";
+import React from "react";
 import Wrapper from "../components/Wrapper";
 import InputField from "../components/InputField";
 import { toErrormap } from "../utils/toErrorMap";
@@ -9,12 +9,7 @@ import { useRouter } from "next/navigation";
 import { routes } from "../constants/routes";
 import { useLoginMutation } from "../generate/hooks";
 import { useFragment } from "../generate";
-import {
-  RegularErrorFragmentDoc,
-  RegularUserFragmentDoc,
-  RegularUserResponseFragmentDoc,
-} from "../generate/graphql";
-import Navbar from "../components/Navbar";
+import { RegularUserResponseFragmentDoc } from "../generate/graphql";
 
 interface LoginProps {}
 

@@ -6,12 +6,15 @@ import { useLogoutMutation, useMeQuery } from "../generate/hooks";
 import { useFragment } from "../generate";
 import { RegularUserFragmentDoc } from "../generate/graphql";
 import { IS_CLIENT } from "../constants";
+import { routes } from "../constants/routes";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
   const [{ fetching: isLoggingOut }, logout] = useLogoutMutation();
   const [{ data, fetching }] = useMeQuery({
-    pause: !IS_CLIENT,
+    pause: !IS_CLIENT(),
   });
+  const router = useRouter();
   const user = useFragment(RegularUserFragmentDoc, data?.me);
 
   let body: any;
@@ -20,10 +23,10 @@ const Navbar = () => {
   } else if (!user) {
     body = (
       <>
-        <Link href="/login" color="white" mr={4}>
+        <Link href={routes.login} color="white" mr={4}>
           Login
         </Link>
-        <Link href="/register" color="white">
+        <Link href={routes.register} color="white">
           Register
         </Link>
       </>
@@ -36,7 +39,10 @@ const Navbar = () => {
         </Text>
         <Button
           isLoading={isLoggingOut}
-          onClick={() => logout({})}
+          onClick={() => {
+            logout({});
+            router.refresh();
+          }}
           variant="link"
           color="black"
         >
