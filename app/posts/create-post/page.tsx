@@ -4,17 +4,13 @@ import Wrapper from "../../components/Wrapper";
 import { Box, Button } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import InputField from "../../components/InputField";
-import { useCreatePostMutation, useMeQuery } from "../../generate/hooks";
+import { useCreatePostMutation } from "../../generate/hooks";
 import { useRouter } from "next/navigation";
-import { apiErrors } from "../../utils/apiErros";
 import { routes } from "@/app/constants/routes";
-import useCheckAuthState from "@/app/hooks/useAuth";
-import { useFragment } from "@/app/generate";
-import { RegularUserFragmentDoc } from "@/app/generate/graphql";
-import { IS_CLIENT } from "@/app/constants";
+import useIsAuth from "@/app/hooks/useAuth";
 
 const Page = () => {
-  useCheckAuthState();
+  useIsAuth();
   const router = useRouter();
   const [, createPost] = useCreatePostMutation();
 
@@ -28,6 +24,7 @@ const Page = () => {
           if (!error) {
             router.push(routes.home);
           }
+          router.refresh();
         }}
       >
         {({ isSubmitting }) => (

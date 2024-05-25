@@ -43,6 +43,15 @@ export const useMeQuery = (
   return useQuery<MeQuery, MeQueryVariables>({ query: MeDocument, ...options });
 };
 
+export const usePostsQuery = (
+  options?: Omit<Urql.UseQueryArgs<PostsQueryVariables>, "query">
+) => {
+  return useQuery<PostsQuery, PostsQueryVariables>({
+    query: PostsDocument,
+    ...options,
+  });
+};
+
 export const useLogoutMutation = () => {
   return useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
 };
@@ -63,13 +72,4 @@ export const useCreatePostMutation = () => {
   return useMutation<CreatePostMutation, CreatePostMutationVariables>(
     CreatePostDocument
   );
-};
-
-export const usePostsQuery = (
-  options?: Omit<Urql.UseQueryArgs<PostsQueryVariables>, "query">
-) => {
-  return useQuery<PostsQuery, PostsQueryVariables>({
-    query: PostsDocument,
-    ...options,
-  });
 };

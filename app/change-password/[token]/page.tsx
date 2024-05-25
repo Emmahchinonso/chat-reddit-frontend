@@ -34,7 +34,7 @@ const ChangePassword = ({ params }: { params: { token: string } }) => {
             if ("token" in errorMap) {
               setTokenError(errorMap.token);
             }
-            setErrors(toErrormap(errors));
+            // setErrors(toErrormap(errors));
           } else if (dataResponse?.user) {
             router.push(routes.home);
           }
@@ -49,7 +49,7 @@ const ChangePassword = ({ params }: { params: { token: string } }) => {
               type="password"
             />
             {tokenError ? (
-              <Flex gap={2} mt={4}>
+              <Flex gap={2} mt={2} fontSize={12}>
                 <Box color="red">{tokenError}</Box>
                 <Link
                   href="/forgot-password

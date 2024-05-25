@@ -1,21 +1,14 @@
-import { Suspense } from "react";
-import Navbar from "./components/Navbar";
-import { PostsDocument } from "./generate/graphql";
-import { getClient } from "./utils/getServerClients";
+"use client";
+import Posts from "./components/Posts";
+import { routes } from "./constants/routes";
+import { Link } from "@chakra-ui/next-js";
 
 export default async function Home() {
-  const result = await getClient().query(PostsDocument, {});
-  const posts = result.data?.posts;
-
   return (
     <main>
       <br />
-      <p>Hello world</p>
-      {posts ? (
-        posts.map((post) => <div key={post.id}>{post.title}</div>)
-      ) : (
-        <p>Loading...</p>
-      )}
+      <Link href={routes.createPost}>Create post</Link>
+      <Posts />
     </main>
   );
 }

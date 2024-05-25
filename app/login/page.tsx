@@ -5,7 +5,7 @@ import React from "react";
 import Wrapper from "../components/Wrapper";
 import InputField from "../components/InputField";
 import { toErrormap } from "../utils/toErrorMap";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { routes } from "../constants/routes";
 import { useLoginMutation } from "../generate/hooks";
 import { useFragment } from "../generate";
@@ -16,6 +16,8 @@ interface LoginProps {}
 const Login: LoginProps = ({}) => {
   const [{ fetching }, login] = useLoginMutation();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const nextUrl = searchParams.get("next");
   return (
     <Wrapper variant="small">
       <Formik
@@ -31,8 +33,7 @@ const Login: LoginProps = ({}) => {
           if (errors) {
             setErrors(toErrormap(errors));
           } else if (user) {
-            router.push(routes.home);
-            router.refresh();
+            router.push(nextUrl || routes.home);
           }
         }}
       >
