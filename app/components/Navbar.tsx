@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 const Navbar = () => {
   const [{ fetching: isLoggingOut }, logout] = useLogoutMutation();
   const [{ data, fetching }] = useMeQuery({
-    pause: !IS_CLIENT(),
+    // pause: !IS_CLIENT(),
   });
   const router = useRouter();
   const user = useFragment(RegularUserFragmentDoc, data?.me);

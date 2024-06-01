@@ -6,6 +6,7 @@ import { ColorModeScript } from "@chakra-ui/react";
 import { theme } from "./theme";
 import Navbar from "./components/Navbar";
 import { Suspense } from "react";
+import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 
 export const metadata: Metadata = {
   title: "Chat reddit web app",
