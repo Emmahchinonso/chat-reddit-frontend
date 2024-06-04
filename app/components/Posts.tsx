@@ -24,7 +24,7 @@ const Posts = () => {
               borderWidth="1px"
             >
               <Heading fontSize="x-large">{post.title}</Heading>
-              <Text mt={4}>{post.text}</Text>
+              <Text mt={4}>{post.textSnippet}</Text>
             </Box>
           ))}
         </Stack>
