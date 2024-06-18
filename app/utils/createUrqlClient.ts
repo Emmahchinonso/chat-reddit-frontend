@@ -3,6 +3,7 @@ import {
   Exchange,
   createClient,
   ClientOptions,
+  Query,
 } from "@urql/next";
 import { cacheExchange } from "@urql/exchange-graphcache";
 import {
@@ -11,6 +12,7 @@ import {
   LogoutMutation,
 } from "../generate/graphql";
 import { devtoolsExchange } from "@urql/devtools";
+import { cursorPagination } from "./cursorPagination";
 
 const createUrqlClient = ({
   exchanges,
@@ -24,6 +26,11 @@ const createUrqlClient = ({
     exchanges: [
       devtoolsExchange as Exchange,
       cacheExchange({
+        resolvers: {
+          Query: {
+            posts: cursorPagination(),
+          },
+        },
         updates: {
           Mutation: {
             login(result: LoginMutation, args, cache, info) {

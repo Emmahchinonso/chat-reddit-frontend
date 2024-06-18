@@ -1,21 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import { usePostsQuery } from "../generate/hooks";
 import { IS_CLIENT } from "../constants";
 import { Link } from "@chakra-ui/next-js";
 import { routes } from "../constants/routes";
-import { Box, Heading, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, Grid, Heading, Stack, Text } from "@chakra-ui/react";
 
 const Posts = () => {
+  const [variables, setVariables] = useState({
+    limit: 10,
+    cursor: null as string | null,
+  });
   const [{ data, fetching }] = usePostsQuery({
     pause: !IS_CLIENT,
-    variables: { limit: 10 },
+    variables,
   });
+
+  if (!fetching && !data) {
+    return <p>Could not fetch posts. please try reloading your page</p>;
+  }
 
   return (
     <section>
-      {data?.posts ? (
+      {!data && fetching ? (
+        <p>Loading...</p>
+      ) : (
         <Stack spacing={4}>
-          {data.posts.map((post) => (
+          {data?.posts.map((post) => (
             <Box
               key={post.id}
               p={5}
@@ -28,9 +38,22 @@ const Posts = () => {
             </Box>
           ))}
         </Stack>
-      ) : (
-        <p>Loading...</p>
       )}
+      {data ? (
+        <Grid placeItems="center" my={8}>
+          <Button
+            isLoading={fetching}
+            onClick={() => {
+              setVariables((state) => ({
+                ...state,
+                cursor: data.posts[data.posts.length - 1].createdAt,
+              }));
+            }}
+          >
+            Load more
+          </Button>
+        </Grid>
+      ) : null}
     </section>
   );
 };
