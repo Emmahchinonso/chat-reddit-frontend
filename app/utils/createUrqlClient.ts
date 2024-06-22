@@ -26,6 +26,9 @@ const createUrqlClient = ({
     exchanges: [
       devtoolsExchange as Exchange,
       cacheExchange({
+        keys: {
+          PaginatedPosts: () => null,
+        },
         resolvers: {
           Query: {
             posts: cursorPagination(),

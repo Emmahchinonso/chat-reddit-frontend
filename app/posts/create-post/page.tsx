@@ -20,7 +20,6 @@ const Page = () => {
         initialValues={{ title: "", text: "" }}
         onSubmit={async (values, {}) => {
           const { error } = await createPost({ postRequest: values });
-          console.log("error ==>", error?.message);
           if (!error) {
             router.push(routes.home);
           }

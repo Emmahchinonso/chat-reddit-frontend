@@ -10,7 +10,7 @@ const Posts = () => {
     limit: 10,
     cursor: null as string | null,
   });
-  const [{ data, fetching }] = usePostsQuery({
+  const [{ data, fetching, stale }] = usePostsQuery({
     pause: !IS_CLIENT,
     variables,
   });
@@ -19,13 +19,15 @@ const Posts = () => {
     return <p>Could not fetch posts. please try reloading your page</p>;
   }
 
+  const postData = data?.posts;
+
   return (
     <section>
-      {!data && fetching ? (
+      {!postData && fetching ? (
         <p>Loading...</p>
       ) : (
-        <Stack spacing={4}>
-          {data?.posts.map((post) => (
+        <Stack spacing={4} pb={4}>
+          {postData?.posts.map((post) => (
             <Box
               key={post.id}
               p={5}
@@ -39,14 +41,14 @@ const Posts = () => {
           ))}
         </Stack>
       )}
-      {data ? (
+      {postData && postData.hasMore ? (
         <Grid placeItems="center" my={8}>
           <Button
-            isLoading={fetching}
+            isLoading={fetching || stale}
             onClick={() => {
               setVariables((state) => ({
                 ...state,
-                cursor: data.posts[data.posts.length - 1].createdAt,
+                cursor: postData.posts[postData.posts.length - 1].createdAt,
               }));
             }}
           >

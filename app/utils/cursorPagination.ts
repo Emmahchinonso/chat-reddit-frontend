@@ -48,7 +48,6 @@ export const cursorPagination = ({
   return (_parent: any, fieldArgs: any, cache: Cache, info: any) => {
     const { parentKey: entityKey, fieldName } = info;
     const allFields = cache.inspectFields(entityKey);
-    console.log("fields ==>", entityKey, fieldName, allFields);
     const fieldInfos = allFields.filter(
       (info: any) => info.fieldName === fieldName
     );
@@ -56,18 +55,32 @@ export const cursorPagination = ({
     if (size === 0) {
       return undefined;
     }
-    console.log("fieldArgs ==>", fieldArgs, fieldInfos);
-    const isDataInCache = cache.resolve(entityKey, fieldName, fieldArgs);
-    console.log("isInCache ===>", isDataInCache);
+
+    const isDataInCache = cache.resolve(
+      cache.resolve(entityKey, fieldName, fieldArgs) as string,
+      "posts"
+    );
     info.partial = !isDataInCache;
 
     const results: string[] = [];
+    let hasMore = true;
     fieldInfos.forEach((fieldInfo) => {
-      const data = cache.resolve(entityKey, fieldInfo.fieldKey) as string[];
+      const _hasMore = cache.resolve(
+        cache.resolve(entityKey, fieldInfo.fieldKey) as string,
+        "hasMore"
+      ) as boolean;
+      const data = cache.resolve(
+        cache.resolve(entityKey, fieldInfo.fieldKey) as string,
+        "posts"
+      ) as string[];
+      if (!_hasMore) {
+        hasMore = _hasMore;
+      }
+
       results.push(...data);
     });
 
-    return results;
+    return { __typename: "PaginatedPosts", hasMore, posts: results };
 
     // const visited = new Set();
     // let result: NullArray<string> = [];
