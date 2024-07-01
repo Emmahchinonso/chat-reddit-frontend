@@ -13,6 +13,7 @@ import {
 } from "../generate/graphql";
 import { devtoolsExchange } from "@urql/devtools";
 import { cursorPagination } from "./cursorPagination";
+import { PostsLimit } from "../constants";
 
 const createUrqlClient = ({
   exchanges,
@@ -36,6 +37,16 @@ const createUrqlClient = ({
         },
         updates: {
           Mutation: {
+            createPost(result, args, cache, info) {
+              const allFields = cache.inspectFields("Query");
+              const fieldInfos = allFields.filter(
+                (info: any) => info.fieldName === "posts"
+              );
+              fieldInfos.forEach((fieldInfo) => {
+                cache.invalidate("Query", "posts", fieldInfo.arguments || {});
+              });
+              window.console.log("allFields", allFields);
+            },
             login(result: LoginMutation, args, cache, info) {
               cache.invalidate("Query", "me");
             },

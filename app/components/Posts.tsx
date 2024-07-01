@@ -1,13 +1,21 @@
 import React, { useState } from "react";
 import { usePostsQuery } from "../generate/hooks";
-import { IS_CLIENT } from "../constants";
+import { IS_CLIENT, PostsLimit } from "../constants";
 import { Link } from "@chakra-ui/next-js";
 import { routes } from "../constants/routes";
-import { Box, Button, Grid, Heading, Stack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Grid,
+  Heading,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 
 const Posts = () => {
   const [variables, setVariables] = useState({
-    limit: 10,
+    limit: PostsLimit,
     cursor: null as string | null,
   });
   const [{ data, fetching, stale }] = usePostsQuery({
@@ -35,7 +43,10 @@ const Posts = () => {
               borderRadius={2}
               borderWidth="1px"
             >
-              <Heading fontSize="x-large">{post.title}</Heading>
+              <Flex gap={2} alignItems="center">
+                <Heading fontSize="x-large">{post.title}</Heading> by{" "}
+                <Text fontWeight={400}>{post.author.username}</Text>
+              </Flex>
               <Text mt={4}>{post.textSnippet}</Text>
             </Box>
           ))}
