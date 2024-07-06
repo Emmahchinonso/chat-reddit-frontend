@@ -1,14 +1,9 @@
 "use client";
 import { Box, Button, Link } from "@chakra-ui/react";
 import { Formik, Form } from "formik";
-import router from "next/router";
 import React, { useState } from "react";
 import InputField from "../components/InputField";
 import Wrapper from "../components/Wrapper";
-import { routes } from "../constants/routes";
-import { useFragment } from "../generate";
-import { RegularUserResponseFragmentDoc } from "../generate/graphql";
-import { toErrormap } from "../utils/toErrorMap";
 import { useForgotPasswordMutation } from "../generate/hooks";
 
 const ForgotPassword = () => {

@@ -24,6 +24,9 @@ import {
   RegisterDocument,
   RegisterMutation,
   RegisterMutationVariables,
+  VotePostDocument,
+  VotePostMutation,
+  VotePostMutationVariables,
 } from "./graphql";
 import * as Urql from "urql";
 
@@ -71,5 +74,11 @@ export const useForgotPasswordMutation = () => {
 export const useCreatePostMutation = () => {
   return useMutation<CreatePostMutation, CreatePostMutationVariables>(
     CreatePostDocument
+  );
+};
+
+export const useVotePostMutation = () => {
+  return useMutation<VotePostMutation, VotePostMutationVariables>(
+    VotePostDocument
   );
 };

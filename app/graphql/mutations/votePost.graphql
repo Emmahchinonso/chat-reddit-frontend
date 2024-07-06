@@ -1,0 +1,3 @@
+mutation VotePost($type: String!, $postId: Int!) {
+  vote(type: $type, postId: $postId)
+}
