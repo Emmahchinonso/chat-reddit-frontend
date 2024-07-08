@@ -22,6 +22,13 @@ enum LoadingState {
 const VotePostButton = ({ post }: IProps) => {
   const [loadingState, setLoadingState] = useState(LoadingState.notLoading);
   const [, vote] = useVotePostMutation();
+
+  async function handleVote(type: VoteState, loadingState: LoadingState) {
+    setLoadingState(loadingState);
+    await vote({ type, postId: post.id });
+    setLoadingState(LoadingState.notLoading);
+  }
+  //   window.console.log("postVote ==>", post.voteStatus);
   return (
     <Flex gap={1} alignItems="center" flexDirection="column">
       <IconButton
@@ -29,17 +36,24 @@ const VotePostButton = ({ post }: IProps) => {
         minW={8}
         h={8}
         p="0"
+        size="sm"
         border="1px solid"
         borderColor="gray.200"
-        borderRadius="50%"
         isLoading={loadingState === LoadingState.loadingUpVote}
-        bg="transparent"
+        bg={post.voteStatus === VoteState.UP ? "teal" : "transparent"}
+        isRound
         onClick={async () => {
-          setLoadingState(LoadingState.loadingUpVote);
-          await vote({ type: VoteState.UP, postId: post.id });
-          setLoadingState(LoadingState.notLoading);
+          if (post.voteStatus === VoteState.UP) {
+            handleVote(VoteState.NONE, LoadingState.loadingUpVote);
+          } else {
+            handleVote(VoteState.UP, LoadingState.loadingUpVote);
+          }
         }}
-        icon={<TriangleUpIcon />}
+        icon={
+          <TriangleUpIcon
+            color={post.voteStatus === VoteState.UP ? "white" : "black"}
+          />
+        }
       />
       {post.points}
       <IconButton
@@ -49,15 +63,22 @@ const VotePostButton = ({ post }: IProps) => {
         p="0"
         border="1px solid"
         borderColor="gray.200"
-        borderRadius="50%"
-        bg="transparent"
+        isRound
+        size="sm"
+        bg={post.voteStatus === VoteState.DOWN ? "orange" : "transparent"}
         isLoading={loadingState === LoadingState.loadingDownVote}
         onClick={async () => {
-          setLoadingState(LoadingState.loadingDownVote);
-          await vote({ type: VoteState.DOWN, postId: post.id });
-          setLoadingState(LoadingState.notLoading);
+          if (post.voteStatus === VoteState.DOWN) {
+            handleVote(VoteState.NONE, LoadingState.loadingDownVote);
+          } else {
+            handleVote(VoteState.DOWN, LoadingState.loadingDownVote);
+          }
         }}
-        icon={<TriangleDownIcon />}
+        icon={
+          <TriangleDownIcon
+            color={post.voteStatus === VoteState.DOWN ? "white" : "black"}
+          />
+        }
       />
     </Flex>
   );
