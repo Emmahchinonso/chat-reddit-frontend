@@ -5,15 +5,12 @@ import React from "react";
 import { useLogoutMutation, useMeQuery } from "../generate/hooks";
 import { useFragment } from "../generate";
 import { RegularUserFragmentDoc } from "../generate/graphql";
-import { IS_CLIENT } from "../constants";
 import { routes } from "../constants/routes";
 import { useRouter } from "next/navigation";
 
 const Navbar = () => {
   const [{ fetching: isLoggingOut }, logout] = useLogoutMutation();
-  const [{ data, fetching }] = useMeQuery({
-    // pause: !IS_CLIENT(),
-  });
+  const [{ data, fetching }] = useMeQuery();
   const router = useRouter();
   const user = useFragment(RegularUserFragmentDoc, data?.me);
 

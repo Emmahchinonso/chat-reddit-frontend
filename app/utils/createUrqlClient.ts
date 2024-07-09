@@ -6,7 +6,7 @@ import {
   Query,
   gql,
 } from "@urql/next";
-import { cacheExchange } from "@urql/exchange-graphcache";
+import { Cache, cacheExchange } from "@urql/exchange-graphcache";
 import {
   LoginMutation,
   RegisterMutation,
@@ -16,15 +16,28 @@ import {
 } from "../generate/graphql";
 import { devtoolsExchange } from "@urql/devtools";
 import { cursorPagination } from "./cursorPagination";
-import { PostsLimit } from "../constants";
+import { IS_CLIENT, PostsLimit } from "../constants";
 import { VoteState } from "../types";
+import { ICookie } from "../provider/providers";
+
+const invalidatePostsField = (cache: Cache) => {
+  const allFields = cache.inspectFields("Query");
+  const fieldInfos = allFields.filter(
+    (info: any) => info.fieldName === "posts"
+  );
+  fieldInfos.forEach((fieldInfo) => {
+    cache.invalidate("Query", "posts", fieldInfo.arguments || {});
+  });
+};
 
 const createUrqlClient = ({
   exchanges,
   otherOptions,
+  cookie,
 }: {
   exchanges?: Exchange[];
   otherOptions?: Omit<ClientOptions, "url" | "exchanges">;
+  cookie?: ICookie;
 }) => {
   return createClient({
     url: "http://localhost:4000/graphql",
@@ -71,19 +84,6 @@ const createUrqlClient = ({
                       voteStatus: null,
                     }
                   );
-                  console.log(
-                    "fragmentResult ==>",
-                    cache.readFragment(
-                      gql`
-                        fragment _ on Post {
-                          id
-                          points
-                          voteStatus
-                        }
-                      `,
-                      { id: postId }
-                    )
-                  );
                   return;
                 }
                 const newPoints =
@@ -104,23 +104,18 @@ const createUrqlClient = ({
               }
             },
             createPost(result, args, cache, info) {
-              const allFields = cache.inspectFields("Query");
-              const fieldInfos = allFields.filter(
-                (info: any) => info.fieldName === "posts"
-              );
-              fieldInfos.forEach((fieldInfo) => {
-                cache.invalidate("Query", "posts", fieldInfo.arguments || {});
-              });
-              window.console.log("allFields", allFields);
+              invalidatePostsField(cache);
             },
             login(result: LoginMutation, args, cache, info) {
               cache.invalidate("Query", "me");
+              invalidatePostsField(cache);
             },
             register(result: RegisterMutation, args, cache, info) {
               cache.invalidate("Query", "me");
             },
             logout(result: LogoutMutation, args, cache, info) {
               cache.invalidate("Query", "me");
+              invalidatePostsField(cache);
             },
           },
         },
@@ -133,6 +128,7 @@ const createUrqlClient = ({
       credentials: "include",
       headers: {
         "x-forwarded-proto": "https",
+        ...(!IS_CLIENT() && { cookie: `${cookie?.name}=${cookie?.value}` }),
       },
     },
   });

@@ -9,10 +9,6 @@ interface IProps {
   post: PostSnippetFragment;
 }
 
-const loadingVoteReducer = (prevState: LoadingState, state: LoadingState) => {
-  return state;
-};
-
 enum LoadingState {
   notLoading = "not-loading",
   loadingUpVote = "loading-up-vote",
@@ -28,7 +24,7 @@ const VotePostButton = ({ post }: IProps) => {
     await vote({ type, postId: post.id });
     setLoadingState(LoadingState.notLoading);
   }
-  //   window.console.log("postVote ==>", post.voteStatus);
+
   return (
     <Flex gap={1} alignItems="center" flexDirection="column">
       <IconButton
@@ -49,6 +45,7 @@ const VotePostButton = ({ post }: IProps) => {
             handleVote(VoteState.UP, LoadingState.loadingUpVote);
           }
         }}
+        variant="unstyled"
         icon={
           <TriangleUpIcon
             color={post.voteStatus === VoteState.UP ? "white" : "black"}
@@ -64,7 +61,8 @@ const VotePostButton = ({ post }: IProps) => {
         border="1px solid"
         borderColor="gray.200"
         isRound
-        size="sm"
+        // size="sm"
+        variant="unstyled"
         bg={post.voteStatus === VoteState.DOWN ? "orange" : "transparent"}
         isLoading={loadingState === LoadingState.loadingDownVote}
         onClick={async () => {

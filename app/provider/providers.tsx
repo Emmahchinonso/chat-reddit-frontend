@@ -13,8 +13,20 @@ import { IS_CLIENT } from "../constants";
 import { useRouter } from "next/navigation";
 import { pipe, tap } from "wonka";
 import { apiErrors } from "../utils/apiErros";
+import { getCookies } from "../utils/actions";
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export interface ICookie {
+  name: string;
+  value: string;
+}
+
+export function Providers({
+  children,
+  cookie,
+}: {
+  children: React.ReactNode;
+  cookie?: ICookie;
+}) {
   const router = useRouter();
   const [client, ssr] = useMemo(() => {
     const ssr = ssrExchange({
@@ -39,12 +51,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
       otherOptions: {
         suspense: true,
       },
+      cookie,
     });
 
     return [client, ssr];
   }, []);
-
-  const data = JSON.stringify(ssr.extractData());
 
   return (
     <Suspense>

@@ -1,20 +1,16 @@
+"use client";
 import React, { useState } from "react";
 import { usePostsQuery } from "../generate/hooks";
-import { IS_CLIENT, PostsLimit } from "../constants";
-import { Link } from "@chakra-ui/next-js";
-import { routes } from "../constants/routes";
+import { PostsLimit } from "../constants";
 import {
   Box,
   Button,
   Flex,
   Grid,
   Heading,
-  Icon,
-  IconButton,
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
 import VotePostButton from "./VotePostButton";
 import { useFragment } from "../generate";
 import { PostSnippetFragmentDoc } from "../generate/graphql";
@@ -24,8 +20,7 @@ const Posts = () => {
     limit: PostsLimit,
     cursor: null as string | null,
   });
-  const [{ data, fetching, stale }] = usePostsQuery({
-    pause: !IS_CLIENT,
+  const [{ data, fetching, stale }, refetch] = usePostsQuery({
     variables,
   });
 

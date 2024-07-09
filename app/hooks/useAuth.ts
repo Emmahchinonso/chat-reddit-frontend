@@ -1,6 +1,5 @@
 "use client";
 import { useEffect } from "react";
-import { IS_CLIENT } from "../constants";
 import { useFragment } from "../generate";
 import { RegularUserFragmentDoc } from "../generate/graphql";
 import { useMeQuery } from "../generate/hooks";
@@ -8,9 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { routes } from "../constants/routes";
 
 const useIsAuth = () => {
-  const [{ data, fetching }] = useMeQuery({
-    pause: !IS_CLIENT(),
-  });
+  const [{ data, fetching }] = useMeQuery();
   const user = useFragment(RegularUserFragmentDoc, data?.me);
   const router = useRouter();
   const pathName = usePathname();
