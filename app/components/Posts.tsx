@@ -14,6 +14,8 @@ import {
 import VotePostButton from "./VotePostButton";
 import { useFragment } from "../generate";
 import { PostSnippetFragmentDoc } from "../generate/graphql";
+import { Link } from "@chakra-ui/next-js";
+import { routes } from "../constants/routes";
 
 const Posts = () => {
   const [variables, setVariables] = useState({
@@ -27,6 +29,7 @@ const Posts = () => {
   if (!fetching && !data) {
     return <p>Could not fetch posts. please try reloading your page</p>;
   }
+
   const postData = data?.posts;
   const posts = useFragment(PostSnippetFragmentDoc, postData?.posts);
 
@@ -48,11 +51,16 @@ const Posts = () => {
             >
               <VotePostButton post={post} />
               <Box>
-                <Flex gap={2} alignItems="center">
-                  <Heading fontSize="x-large">{post.title}</Heading> by{" "}
-                  <Text fontWeight={400}>{post.author.username}</Text>
-                </Flex>
-                <Text mt={4}>{post.textSnippet}</Text>
+                <Link href={routes.postId(post.id)}>
+                  <Heading fontSize="x-large">{post.title}</Heading>
+                </Link>
+                <Text mt={2}>{post.textSnippet}</Text>
+                <Text fontWeight={400} fontSize="12px" mt={4}>
+                  posted by{" "}
+                  <Text as="span" fontWeight={500}>
+                    {post.author.username}
+                  </Text>
+                </Text>
               </Box>
             </Flex>
           ))}

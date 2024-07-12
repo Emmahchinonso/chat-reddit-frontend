@@ -9,13 +9,6 @@ export default async function Home() {
   return (
     <Wrapper>
       <main>
-        <Flex alignItems="center" justifyContent="space-between">
-          <Heading>ChatReddit</Heading>
-          <Link display="block" href={routes.createPost}>
-            Create post
-          </Link>
-        </Flex>
-        <br />
         <Posts />
       </main>
     </Wrapper>

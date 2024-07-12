@@ -25,6 +25,7 @@ const documents = {
     "mutation Register($options: UserNamePassword!) {\n  register(options: $options) {\n    ...RegularUserResponse\n  }\n}": types.RegisterDocument,
     "mutation VotePost($type: String!, $postId: Int!) {\n  vote(type: $type, postId: $postId)\n}": types.VotePostDocument,
     "query Me {\n  me {\n    ...RegularUser\n  }\n}": types.MeDocument,
+    "query Post($id: Int!) {\n  post(id: $id) {\n    createdAt\n    id\n    title\n    points\n    updatedAt\n    text\n    voteStatus\n    author {\n      id\n      username\n    }\n  }\n}": types.PostDocument,
     "query Posts($limit: Int!, $cursor: String) {\n  posts(limit: $limit, cursor: $cursor) {\n    hasMore\n    posts {\n      ...PostSnippet\n    }\n  }\n}": types.PostsDocument,
 };
 
@@ -90,6 +91,10 @@ export function graphql(source: "mutation VotePost($type: String!, $postId: Int!
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "query Me {\n  me {\n    ...RegularUser\n  }\n}"): (typeof documents)["query Me {\n  me {\n    ...RegularUser\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query Post($id: Int!) {\n  post(id: $id) {\n    createdAt\n    id\n    title\n    points\n    updatedAt\n    text\n    voteStatus\n    author {\n      id\n      username\n    }\n  }\n}"): (typeof documents)["query Post($id: Int!) {\n  post(id: $id) {\n    createdAt\n    id\n    title\n    points\n    updatedAt\n    text\n    voteStatus\n    author {\n      id\n      username\n    }\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

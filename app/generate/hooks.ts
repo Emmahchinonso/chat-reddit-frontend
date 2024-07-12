@@ -6,6 +6,7 @@ import {
   CreatePostDocument,
   CreatePostMutation,
   CreatePostMutationVariables,
+  Exact,
   ForgotPasswordDocument,
   ForgotPasswordMutation,
   ForgotPasswordMutationVariables,
@@ -18,6 +19,9 @@ import {
   MeDocument,
   MeQuery,
   MeQueryVariables,
+  PostDocument,
+  PostQuery,
+  PostQueryVariables,
   PostsDocument,
   PostsQuery,
   PostsQueryVariables,
@@ -51,6 +55,15 @@ export const usePostsQuery = (
 ) => {
   return useQuery<PostsQuery, PostsQueryVariables>({
     query: PostsDocument,
+    ...options,
+  });
+};
+
+export const usePostQuery = (
+  options: Omit<Urql.UseQueryArgs<PostQueryVariables>, "query">
+) => {
+  return useQuery({
+    query: PostDocument,
     ...options,
   });
 };

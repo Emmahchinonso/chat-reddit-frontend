@@ -7,6 +7,7 @@ import { useFragment } from "../generate";
 import { RegularUserFragmentDoc } from "../generate/graphql";
 import { routes } from "../constants/routes";
 import { useRouter } from "next/navigation";
+import Wrapper from "./Wrapper";
 
 const Navbar = () => {
   const [{ fetching: isLoggingOut }, logout] = useLogoutMutation();
@@ -30,7 +31,8 @@ const Navbar = () => {
     );
   } else {
     body = (
-      <Flex gap={3}>
+      <Flex gap={3} alignItems="center">
+        <Button>Create post</Button>
         <Text fontSize="md" color="black" fontWeight="medium">
           {user?.username}
         </Text>
@@ -50,10 +52,14 @@ const Navbar = () => {
   }
 
   return (
-    <Flex bg="tan" p={4}>
-      <Link href="/">Home</Link>
-      <Box ml="auto">{body}</Box>
-    </Flex>
+    <Box bg="tan" p={4}>
+      <Flex maxW="800px" alignItems="center" mx="auto">
+        <Link href="/" fontWeight={600} fontSize={20}>
+          Chatreddit
+        </Link>
+        <Box ml="auto">{body}</Box>
+      </Flex>
+    </Box>
   );
 };
 

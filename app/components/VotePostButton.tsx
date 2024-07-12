@@ -61,7 +61,7 @@ const VotePostButton = ({ post }: IProps) => {
         border="1px solid"
         borderColor="gray.200"
         isRound
-        // size="sm"
+        size="sm"
         variant="unstyled"
         bg={post.voteStatus === VoteState.DOWN ? "orange" : "transparent"}
         isLoading={loadingState === LoadingState.loadingDownVote}

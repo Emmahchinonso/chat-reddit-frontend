@@ -3,4 +3,5 @@ export const routes = {
   register: "/register",
   login: "/login",
   createPost: "/posts/create-post",
+  postId: (id: number) => `/posts/${id}`,
 };
