@@ -13,6 +13,7 @@ import {
   LogoutMutation,
   VotePostMutationVariables,
   PostSnippetFragment,
+  DeletePostMutationVariables,
 } from "../generate/graphql";
 import { devtoolsExchange } from "@urql/devtools";
 import { cursorPagination } from "./cursorPagination";
@@ -104,6 +105,9 @@ const createUrqlClient = ({
               }
             },
             createPost(result, args, cache, info) {
+              invalidatePostsField(cache);
+            },
+            deletePost(result, args, cache, info) {
               invalidatePostsField(cache);
             },
             login(result: LoginMutation, args, cache, info) {

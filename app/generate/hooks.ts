@@ -6,6 +6,9 @@ import {
   CreatePostDocument,
   CreatePostMutation,
   CreatePostMutationVariables,
+  DeletePostDocument,
+  DeletePostMutation,
+  DeletePostMutationVariables,
   Exact,
   ForgotPasswordDocument,
   ForgotPasswordMutation,
@@ -87,6 +90,12 @@ export const useForgotPasswordMutation = () => {
 export const useCreatePostMutation = () => {
   return useMutation<CreatePostMutation, CreatePostMutationVariables>(
     CreatePostDocument
+  );
+};
+
+export const useDeletePostMutation = () => {
+  return useMutation<DeletePostMutation, DeletePostMutationVariables>(
+    DeletePostDocument
   );
 };
 

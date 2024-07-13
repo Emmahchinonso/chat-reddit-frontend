@@ -1,6 +1,6 @@
 "use client";
-import React, { useState } from "react";
-import { usePostsQuery } from "../generate/hooks";
+import React, { useRef, useState } from "react";
+import { useDeletePostMutation, usePostsQuery } from "../generate/hooks";
 import { PostsLimit } from "../constants";
 import {
   Box,
@@ -8,6 +8,7 @@ import {
   Flex,
   Grid,
   Heading,
+  IconButton,
   Stack,
   Text,
 } from "@chakra-ui/react";
@@ -16,6 +17,7 @@ import { useFragment } from "../generate";
 import { PostSnippetFragmentDoc } from "../generate/graphql";
 import { Link } from "@chakra-ui/next-js";
 import { routes } from "../constants/routes";
+import { DeleteIcon } from "@chakra-ui/icons";
 
 const Posts = () => {
   const [variables, setVariables] = useState({
@@ -25,6 +27,8 @@ const Posts = () => {
   const [{ data, fetching, stale }, refetch] = usePostsQuery({
     variables,
   });
+  const [{ fetching: isDeleting }, deletePost] = useDeletePostMutation();
+  const postRef = useRef<Number>();
 
   if (!fetching && !data) {
     return <p>Could not fetch posts. please try reloading your page</p>;
@@ -43,14 +47,14 @@ const Posts = () => {
             <Flex
               key={post.id}
               p={5}
-              gap={3}
+              gap={4}
               alignItems="center"
               shadow="md"
               borderRadius={2}
               borderWidth="1px"
             >
               <VotePostButton post={post} />
-              <Box>
+              <Box flexGrow="1">
                 <Link href={routes.postId(post.id)}>
                   <Heading fontSize="x-large">{post.title}</Heading>
                 </Link>
@@ -62,6 +66,18 @@ const Posts = () => {
                   </Text>
                 </Text>
               </Box>
+              <IconButton
+                variant="unstyled"
+                icon={<DeleteIcon />}
+                aria-label="delete post"
+                color="red"
+                onClick={async () => {
+                  postRef.current = post.id;
+                  await deletePost({ id: post.id });
+                  postRef.current = undefined;
+                }}
+                isLoading={isDeleting && postRef.current === post.id}
+              />
             </Flex>
           ))}
         </Stack>
