@@ -32,7 +32,17 @@ const Navbar = () => {
   } else {
     body = (
       <Flex gap={3} alignItems="center">
-        <Button>Create post</Button>
+        <Link
+          bg="white"
+          p={1}
+          px={2}
+          borderRadius={4}
+          _hover={{ textDecor: "none" }}
+          as={Button}
+          href={routes.createPost}
+        >
+          Create post
+        </Link>
         <Text fontSize="md" color="black" fontWeight="medium">
           {user?.username}
         </Text>

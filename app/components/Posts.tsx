@@ -1,6 +1,10 @@
 "use client";
 import React, { useRef, useState } from "react";
-import { useDeletePostMutation, usePostsQuery } from "../generate/hooks";
+import {
+  useDeletePostMutation,
+  useMeQuery,
+  usePostsQuery,
+} from "../generate/hooks";
 import { PostsLimit } from "../constants";
 import {
   Box,
@@ -14,10 +18,14 @@ import {
 } from "@chakra-ui/react";
 import VotePostButton from "./VotePostButton";
 import { useFragment } from "../generate";
-import { PostSnippetFragmentDoc } from "../generate/graphql";
+import {
+  PostSnippetFragmentDoc,
+  RegularUserFragmentDoc,
+} from "../generate/graphql";
 import { Link } from "@chakra-ui/next-js";
 import { routes } from "../constants/routes";
-import { DeleteIcon } from "@chakra-ui/icons";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import EditDeleteButton from "./EditDeleteButton";
 
 const Posts = () => {
   const [variables, setVariables] = useState({
@@ -27,6 +35,8 @@ const Posts = () => {
   const [{ data, fetching, stale }, refetch] = usePostsQuery({
     variables,
   });
+  const [{ data: userData }] = useMeQuery();
+  const user = useFragment(RegularUserFragmentDoc, userData?.me);
   const [{ fetching: isDeleting }, deletePost] = useDeletePostMutation();
   const postRef = useRef<Number>();
 
@@ -66,30 +76,19 @@ const Posts = () => {
                   </Text>
                 </Text>
               </Box>
-              <IconButton
-                variant="unstyled"
-                icon={<DeleteIcon />}
-                aria-label="delete post"
-                color="red"
-                onClick={async () => {
-                  postRef.current = post.id;
-                  await deletePost({ id: post.id });
-                  postRef.current = undefined;
-                }}
-                isLoading={isDeleting && postRef.current === post.id}
-              />
+              <EditDeleteButton authorId={post.author.id} postId={post.id} />
             </Flex>
           ))}
         </Stack>
       )}
-      {posts && postData?.hasMore ? (
+      {postData && postData?.hasMore ? (
         <Grid placeItems="center" my={8}>
           <Button
             isLoading={fetching || stale}
             onClick={() => {
               setVariables((state) => ({
                 ...state,
-                cursor: posts?.[posts.length - 1].createdAt,
+                cursor: posts?.[posts?.length - 1].createdAt!,
               }));
             }}
           >

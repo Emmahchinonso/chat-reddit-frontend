@@ -112,14 +112,14 @@ const createUrqlClient = ({
             },
             login(result: LoginMutation, args, cache, info) {
               cache.invalidate("Query", "me");
-              invalidatePostsField(cache);
+              // invalidatePostsField(cache);
             },
             register(result: RegisterMutation, args, cache, info) {
               cache.invalidate("Query", "me");
             },
             logout(result: LogoutMutation, args, cache, info) {
               cache.invalidate("Query", "me");
-              invalidatePostsField(cache);
+              // invalidatePostsField(cache);
             },
           },
         },

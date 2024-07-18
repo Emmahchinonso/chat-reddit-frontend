@@ -31,6 +31,9 @@ import {
   RegisterDocument,
   RegisterMutation,
   RegisterMutationVariables,
+  UpdatePostDocument,
+  UpdatePostMutation,
+  UpdatePostMutationVariables,
   VotePostDocument,
   VotePostMutation,
   VotePostMutationVariables,
@@ -90,6 +93,12 @@ export const useForgotPasswordMutation = () => {
 export const useCreatePostMutation = () => {
   return useMutation<CreatePostMutation, CreatePostMutationVariables>(
     CreatePostDocument
+  );
+};
+
+export const useUpdatePostMutation = () => {
+  return useMutation<UpdatePostMutation, UpdatePostMutationVariables>(
+    UpdatePostDocument
   );
 };
 

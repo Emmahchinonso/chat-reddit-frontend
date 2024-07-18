@@ -1,4 +1,5 @@
 "use client";
+import EditDeleteButton from "@/app/components/EditDeleteButton";
 import Wrapper from "@/app/components/Wrapper";
 import { routes } from "@/app/constants/routes";
 import { usePostQuery } from "@/app/generate/hooks";
@@ -15,7 +16,6 @@ const Post = ({ params }: { params: { postId: string } }) => {
   });
 
   if (fetching) return <p>Loading...</p>;
-  console.log("post ==>", data);
 
   if (!data?.post) {
     return (
@@ -32,10 +32,15 @@ const Post = ({ params }: { params: { postId: string } }) => {
     <Wrapper>
       <main>
         <Link href={routes.home} display="block" mb={3}>
-          {" "}
           <ArrowLeftIcon /> Go back
         </Link>
-        <Heading mb={4}>{data.post.title}</Heading>
+        <Flex alignItems="center" gap={8} mb={4}>
+          <Heading>{data.post.title}</Heading>
+          <EditDeleteButton
+            postId={data.post.id}
+            authorId={data.post.author.id}
+          />
+        </Flex>
         {data?.post?.text}
       </main>
     </Wrapper>
