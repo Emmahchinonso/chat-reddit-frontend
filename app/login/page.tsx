@@ -11,9 +11,7 @@ import { useLoginMutation } from "../generate/hooks";
 import { useFragment } from "../generate";
 import { RegularUserResponseFragmentDoc } from "../generate/graphql";
 
-interface LoginProps {}
-
-const Login: LoginProps = ({}) => {
+const Login = () => {
   const [{ fetching }, login] = useLoginMutation();
   const router = useRouter();
   const searchParams = useSearchParams();

@@ -17,7 +17,7 @@ import {
 } from "../generate/graphql";
 import { devtoolsExchange } from "@urql/devtools";
 import { cursorPagination } from "./cursorPagination";
-import { IS_CLIENT, PostsLimit } from "../constants";
+import { API_URL, IS_CLIENT, PostsLimit } from "../constants";
 import { VoteState } from "../types";
 import { ICookie } from "../provider/providers";
 
@@ -40,8 +40,9 @@ const createUrqlClient = ({
   otherOptions?: Omit<ClientOptions, "url" | "exchanges">;
   cookie?: ICookie;
 }) => {
+  console.log("APi url =>", API_URL);
   return createClient({
-    url: "http://localhost:4000/graphql",
+    url: API_URL!,
     exchanges: [
       devtoolsExchange as Exchange,
       cacheExchange({

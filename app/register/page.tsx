@@ -9,16 +9,10 @@ import { toErrormap } from "../utils/toErrorMap";
 import { useRouter } from "next/navigation";
 import { routes } from "../constants/routes";
 import { useRegisterMutation } from "../generate/hooks";
-import {
-  RegularErrorFragmentDoc,
-  RegularUserFragmentDoc,
-  RegularUserResponseFragmentDoc,
-} from "../generate/graphql";
+import { RegularUserResponseFragmentDoc } from "../generate/graphql";
 import { useFragment } from "../generate";
 
-interface RegisterProps {}
-
-const Register: RegisterProps = ({}) => {
+const Register = ({}) => {
   const [{ fetching }, register] = useRegisterMutation();
   const router = useRouter();
   return (
