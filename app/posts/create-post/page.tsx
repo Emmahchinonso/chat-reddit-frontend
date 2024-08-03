@@ -12,15 +12,17 @@ import useIsAuth from "@/app/hooks/useAuth";
 const Page = () => {
   useIsAuth();
   const router = useRouter();
-  const [, createPost] = useCreatePostMutation();
+  const [createPost] = useCreatePostMutation();
 
   return (
     <Wrapper variant="small">
       <Formik
         initialValues={{ title: "", text: "" }}
         onSubmit={async (values, {}) => {
-          const { error } = await createPost({ postRequest: values });
-          if (!error) {
+          const { errors } = await createPost({
+            variables: { postRequest: values },
+          });
+          if (!errors) {
             router.push(routes.home);
           }
           router.refresh();

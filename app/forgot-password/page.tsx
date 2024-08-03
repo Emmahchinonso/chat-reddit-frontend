@@ -7,7 +7,7 @@ import Wrapper from "../components/Wrapper";
 import { useForgotPasswordMutation } from "../generate/hooks";
 
 const ForgotPassword = () => {
-  const [, forgotPassword] = useForgotPasswordMutation();
+  const [forgotPassword] = useForgotPasswordMutation();
   const [complete, setComplete] = useState(false);
 
   return (
@@ -15,7 +15,7 @@ const ForgotPassword = () => {
       <Formik
         initialValues={{ email: "" }}
         onSubmit={async (values, { setErrors }) => {
-          await forgotPassword(values);
+          await forgotPassword({ variables: values });
           setComplete(true);
         }}
       >

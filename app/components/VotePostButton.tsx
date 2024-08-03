@@ -17,11 +17,11 @@ enum LoadingState {
 
 const VotePostButton = ({ post }: IProps) => {
   const [loadingState, setLoadingState] = useState(LoadingState.notLoading);
-  const [, vote] = useVotePostMutation();
+  const [vote] = useVotePostMutation();
 
   async function handleVote(type: VoteState, loadingState: LoadingState) {
     setLoadingState(loadingState);
-    await vote({ type, postId: post.id });
+    await vote({ variables: { type, postId: post.id } });
     setLoadingState(LoadingState.notLoading);
   }
 

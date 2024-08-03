@@ -10,13 +10,13 @@ import { useRouter } from "next/navigation";
 import Wrapper from "./Wrapper";
 
 const Navbar = () => {
-  const [{ fetching: isLoggingOut }, logout] = useLogoutMutation();
-  const [{ data, fetching }] = useMeQuery();
+  const [logout, { loading: isLoggingOut }] = useLogoutMutation();
+  const { data, loading } = useMeQuery();
   const router = useRouter();
   const user = useFragment(RegularUserFragmentDoc, data?.me);
 
   let body: any;
-  if (fetching) {
+  if (loading) {
     body = null;
   } else if (!user) {
     body = (

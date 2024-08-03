@@ -9,13 +9,13 @@ import { Box, Flex, Grid, Heading, Text } from "@chakra-ui/react";
 import React from "react";
 
 const Post = ({ params }: { params: { postId: string } }) => {
-  const [{ data, fetching }] = usePostQuery({
+  const { data, loading } = usePostQuery({
     variables: {
       id: Number(params.postId),
     },
   });
 
-  if (fetching) return <p>Loading...</p>;
+  if (loading) return <p>Loading...</p>;
 
   if (!data?.post) {
     return (

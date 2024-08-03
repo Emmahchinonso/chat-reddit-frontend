@@ -40,7 +40,6 @@ const createUrqlClient = ({
   otherOptions?: Omit<ClientOptions, "url" | "exchanges">;
   cookie?: ICookie;
 }) => {
-  console.log("APi url =>", API_URL);
   return createClient({
     url: API_URL!,
     exchanges: [

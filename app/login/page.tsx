@@ -12,7 +12,7 @@ import { useFragment } from "../generate";
 import { RegularUserResponseFragmentDoc } from "../generate/graphql";
 
 const Login = () => {
-  const [{ fetching }, login] = useLoginMutation();
+  const [login, { loading }] = useLoginMutation();
   const router = useRouter();
   const searchParams = useSearchParams();
   const nextUrl = searchParams.get("next");
@@ -21,7 +21,7 @@ const Login = () => {
       <Formik
         initialValues={{ usernameOrEmail: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
-          const response = await login(values);
+          const response = await login({ variables: values });
           const dataResponse = useFragment(
             RegularUserResponseFragmentDoc,
             response.data?.login
@@ -62,7 +62,7 @@ const Login = () => {
               Forgot password?
             </Link>
             <Button
-              isLoading={fetching || isSubmitting}
+              isLoading={loading || isSubmitting}
               colorScheme="teal"
               type="submit"
               mt={4}

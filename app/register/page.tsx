@@ -13,14 +13,14 @@ import { RegularUserResponseFragmentDoc } from "../generate/graphql";
 import { useFragment } from "../generate";
 
 const Register = ({}) => {
-  const [{ fetching }, register] = useRegisterMutation();
+  const [register, { loading }] = useRegisterMutation();
   const router = useRouter();
   return (
     <Wrapper variant="small">
       <Formik
         initialValues={{ email: "", username: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
-          const response = await register({ options: values });
+          const response = await register({ variables: { options: values } });
           const dataResponse = useFragment(
             RegularUserResponseFragmentDoc,
             response.data?.register
@@ -58,7 +58,7 @@ const Register = ({}) => {
               />
             </Box>
             <Button
-              isLoading={fetching || isSubmitting}
+              isLoading={loading || isSubmitting}
               colorScheme="teal"
               type="submit"
               mt={4}

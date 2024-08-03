@@ -9,11 +9,18 @@ import { Exchange, UrqlProvider, ssrExchange } from "@urql/next";
 
 import { Suspense, useMemo } from "react";
 import createUrqlClient from "../utils/createUrqlClient";
-import { IS_CLIENT } from "../constants";
+import { API_URL, IS_CLIENT } from "../constants";
 import { useRouter } from "next/navigation";
 import { pipe, tap } from "wonka";
 import { apiErrors } from "../utils/apiErros";
 import { getCookies } from "../utils/actions";
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  gql,
+} from "@apollo/client";
+import { PaginatedPosts } from "../generate/graphql";
 
 export interface ICookie {
   name: string;
@@ -28,6 +35,37 @@ export function Providers({
   cookie?: ICookie;
 }) {
   const router = useRouter();
+  const _client = new ApolloClient({
+    uri: API_URL,
+    cache: new InMemoryCache({
+      typePolicies: {
+        Query: {
+          fields: {
+            posts: {
+              keyArgs: false,
+              merge(
+                existing: PaginatedPosts | undefined,
+                incoming: PaginatedPosts,
+                { args }
+              ): PaginatedPosts {
+                console.log("posts ==>", existing, incoming);
+                return {
+                  ...incoming,
+                  posts: [...(existing?.posts || []), ...incoming.posts],
+                };
+              },
+            },
+          },
+        },
+      },
+    }),
+    credentials: "include",
+    headers: {
+      "x-forwarded-proto": "https",
+      ...(!IS_CLIENT() && { cookie: `${cookie?.name}=${cookie?.value}` }),
+    },
+  });
+
   const [client, ssr] = useMemo(() => {
     const ssr = ssrExchange({
       isClient: IS_CLIENT(),
@@ -59,12 +97,14 @@ export function Providers({
 
   return (
     <Suspense>
-      <UrqlProvider client={client} ssr={ssr}>
+      <ApolloProvider client={_client}>
+        {/* <UrqlProvider client={client} ssr={ssr}> */}
         <ChakraProvider colorModeManager={cookieStorageManager} theme={theme}>
           <CSSReset />
           {children}
         </ChakraProvider>
-      </UrqlProvider>
+        {/* </UrqlProvider> */}
+      </ApolloProvider>
     </Suspense>
   );
 }

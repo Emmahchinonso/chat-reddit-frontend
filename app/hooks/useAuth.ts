@@ -7,16 +7,16 @@ import { usePathname, useRouter } from "next/navigation";
 import { routes } from "../constants/routes";
 
 const useIsAuth = () => {
-  const [{ data, fetching }] = useMeQuery();
+  const { data, loading } = useMeQuery();
   const user = useFragment(RegularUserFragmentDoc, data?.me);
   const router = useRouter();
   const pathName = usePathname();
 
   useEffect(() => {
-    if (!fetching && !user) {
+    if (!loading && !user) {
       router.replace(`${routes.login}?next=${pathName}`);
     }
-  }, [fetching, user]);
+  }, [loading, user]);
 };
 
 export default useIsAuth;

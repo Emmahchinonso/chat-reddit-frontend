@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@urql/next";
+// import { useMutation } from "@urql/next";
 import {
   ChangePasswordDocument,
   ChangePasswordMutation,
@@ -39,28 +39,31 @@ import {
   VotePostMutationVariables,
 } from "./graphql";
 import * as Urql from "urql";
+import {
+  ApolloClient,
+  QueryHookOptions,
+  useMutation,
+  useQuery,
+} from "@apollo/client";
 
 export const useLoginMutation = () => {
   return useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
 };
 
 export const useRegisterMutation = () => {
-  return useMutation<RegisterMutation, RegisterMutationVariables>(
-    RegisterDocument
-  );
+  return useMutation(RegisterDocument);
 };
 
 export const useMeQuery = (
   options?: Omit<Urql.UseQueryArgs<MeQueryVariables>, "query">
 ) => {
-  return useQuery<MeQuery, MeQueryVariables>({ query: MeDocument, ...options });
+  return useQuery<MeQuery, MeQueryVariables>(MeDocument, { ...options });
 };
 
 export const usePostsQuery = (
-  options?: Omit<Urql.UseQueryArgs<PostsQueryVariables>, "query">
+  options?: QueryHookOptions<PostsQuery, PostsQueryVariables>
 ) => {
-  return useQuery<PostsQuery, PostsQueryVariables>({
-    query: PostsDocument,
+  return useQuery<PostsQuery, PostsQueryVariables>(PostsDocument, {
     ...options,
   });
 };
@@ -68,8 +71,7 @@ export const usePostsQuery = (
 export const usePostQuery = (
   options: Omit<Urql.UseQueryArgs<PostQueryVariables>, "query">
 ) => {
-  return useQuery({
-    query: PostDocument,
+  return useQuery(PostDocument, {
     ...options,
   });
 };

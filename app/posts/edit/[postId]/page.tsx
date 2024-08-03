@@ -18,15 +18,14 @@ import { Link } from "@chakra-ui/next-js";
 const EditPost = ({ params }: { params: { postId: string } }) => {
   useIsAuth();
   const router = useRouter();
-  const [, createPost] = useCreatePostMutation();
-  const [{ data, fetching }] = usePostQuery({
+  const { data, loading } = usePostQuery({
     variables: {
       id: Number(params.postId),
     },
   });
-  const [, updatePost] = useUpdatePostMutation();
+  const [updatePost] = useUpdatePostMutation();
 
-  if (fetching) {
+  if (loading) {
     return <Wrapper variant="small">Loading...</Wrapper>;
   }
 
@@ -45,8 +44,10 @@ const EditPost = ({ params }: { params: { postId: string } }) => {
           text: data?.post?.text || "",
         }}
         onSubmit={async (values, {}) => {
-          const { error } = await updatePost({ id: +params.postId, ...values });
-          if (!error) {
+          const { errors } = await updatePost({
+            variables: { id: +params.postId, ...values },
+          });
+          if (!errors) {
             router.back();
           }
         }}

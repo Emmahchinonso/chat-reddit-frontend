@@ -13,7 +13,7 @@ import React, { useState } from "react";
 
 const ChangePassword = ({ params }: { params: { token: string } }) => {
   const router = useRouter();
-  const [, changePassword] = useChangePasswordMutation();
+  const [changePassword] = useChangePasswordMutation();
   const [tokenError, setTokenError] = useState("");
   return (
     <Wrapper variant="small">
@@ -21,8 +21,10 @@ const ChangePassword = ({ params }: { params: { token: string } }) => {
         initialValues={{ newPassword: "" }}
         onSubmit={async (values, { setErrors }) => {
           const response = await changePassword({
-            newPassword: values.newPassword,
-            token: params.token,
+            variables: {
+              newPassword: values.newPassword,
+              token: params.token,
+            },
           });
           const dataResponse = useFragment(
             RegularUserResponseFragmentDoc,

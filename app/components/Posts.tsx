@@ -20,6 +20,7 @@ import VotePostButton from "./VotePostButton";
 import { useFragment } from "../generate";
 import {
   PostSnippetFragmentDoc,
+  PostsQuery,
   RegularUserFragmentDoc,
 } from "../generate/graphql";
 import { Link } from "@chakra-ui/next-js";
@@ -28,19 +29,15 @@ import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import EditDeleteButton from "./EditDeleteButton";
 
 const Posts = () => {
-  const [variables, setVariables] = useState({
-    limit: PostsLimit,
-    cursor: null as string | null,
+  const { data, loading, fetchMore, variables } = usePostsQuery({
+    variables: {
+      limit: PostsLimit,
+      cursor: null as string | null,
+    },
+    notifyOnNetworkStatusChange: true,
   });
-  const [{ data, fetching, stale }, refetch] = usePostsQuery({
-    variables,
-  });
-  const [{ data: userData }] = useMeQuery();
-  const user = useFragment(RegularUserFragmentDoc, userData?.me);
-  const [{ fetching: isDeleting }, deletePost] = useDeletePostMutation();
-  const postRef = useRef<Number>();
 
-  if (!fetching && !data) {
+  if (!loading && !data) {
     return <p>Could not fetch posts. please try reloading your page</p>;
   }
 
@@ -49,7 +46,7 @@ const Posts = () => {
 
   return (
     <section>
-      {!posts && fetching ? (
+      {!posts && loading ? (
         <p>Loading...</p>
       ) : (
         <Stack spacing={4} pb={4}>
@@ -84,12 +81,33 @@ const Posts = () => {
       {postData && postData?.hasMore ? (
         <Grid placeItems="center" my={8}>
           <Button
-            isLoading={fetching || stale}
+            isLoading={loading}
             onClick={() => {
-              setVariables((state) => ({
-                ...state,
-                cursor: posts?.[posts?.length - 1].createdAt!,
-              }));
+              fetchMore({
+                variables: {
+                  limit: variables?.limit,
+                  cursor: posts?.[posts?.length - 1].createdAt!,
+                },
+                // updateQuery: (
+                //   previousValue,
+                //   { fetchMoreResult }
+                // ): PostsQuery => {
+                //   if (!fetchMoreResult) {
+                //     return previousValue;
+                //   }
+                //   return {
+                //     __typename: "Query",
+                //     posts: {
+                //       __typename: "PaginatedPosts",
+                //       posts: [
+                //         ...previousValue.posts.posts,
+                //         ...fetchMoreResult.posts.posts,
+                //       ],
+                //       hasMore: fetchMoreResult.posts.hasMore,
+                //     },
+                //   };
+                // },
+              });
             }}
           >
             Load more
