@@ -9,7 +9,11 @@ import { toErrormap } from "../utils/toErrorMap";
 import { useRouter } from "next/navigation";
 import { routes } from "../constants/routes";
 import { useRegisterMutation } from "../generate/hooks";
-import { RegularUserResponseFragmentDoc } from "../generate/graphql";
+import {
+  MeDocument,
+  MeQuery,
+  RegularUserResponseFragmentDoc,
+} from "../generate/graphql";
 import { useFragment } from "../generate";
 
 const Register = ({}) => {
@@ -20,7 +24,22 @@ const Register = ({}) => {
       <Formik
         initialValues={{ email: "", username: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
-          const response = await register({ variables: { options: values } });
+          const response = await register({
+            variables: { options: values },
+            update: (cache, { data }) => {
+              const userData = useFragment(
+                RegularUserResponseFragmentDoc,
+                data?.register
+              );
+              cache.writeQuery<MeQuery>({
+                query: MeDocument,
+                data: {
+                  __typename: "Query",
+                  me: userData?.user,
+                },
+              });
+            },
+          });
           const dataResponse = useFragment(
             RegularUserResponseFragmentDoc,
             response.data?.register

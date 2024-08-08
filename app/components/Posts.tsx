@@ -1,11 +1,11 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useTransition } from "react";
 import {
   useDeletePostMutation,
   useMeQuery,
   usePostsQuery,
 } from "../generate/hooks";
-import { PostsLimit } from "../constants";
+import { IS_CLIENT, PostsLimit } from "../constants";
 import {
   Box,
   Button,
@@ -18,26 +18,22 @@ import {
 } from "@chakra-ui/react";
 import VotePostButton from "./VotePostButton";
 import { useFragment } from "../generate";
-import {
-  PostSnippetFragmentDoc,
-  PostsQuery,
-  RegularUserFragmentDoc,
-} from "../generate/graphql";
+import { PostSnippetFragmentDoc } from "../generate/graphql";
 import { Link } from "@chakra-ui/next-js";
 import { routes } from "../constants/routes";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import EditDeleteButton from "./EditDeleteButton";
 
 const Posts = () => {
-  const { data, loading, fetchMore, variables } = usePostsQuery({
+  const [isPending, startTransition] = useTransition();
+  const { data, fetchMore, client } = usePostsQuery({
     variables: {
       limit: PostsLimit,
       cursor: null as string | null,
     },
-    notifyOnNetworkStatusChange: true,
   });
 
-  if (!loading && !data) {
+  if (!isPending && !data) {
     return <p>Could not fetch posts. please try reloading your page</p>;
   }
 
@@ -46,7 +42,7 @@ const Posts = () => {
 
   return (
     <section>
-      {!posts && loading ? (
+      {!posts && isPending ? (
         <p>Loading...</p>
       ) : (
         <Stack spacing={4} pb={4}>
@@ -81,32 +77,34 @@ const Posts = () => {
       {postData && postData?.hasMore ? (
         <Grid placeItems="center" my={8}>
           <Button
-            isLoading={loading}
+            isLoading={isPending}
             onClick={() => {
-              fetchMore({
-                variables: {
-                  limit: variables?.limit,
-                  cursor: posts?.[posts?.length - 1].createdAt!,
-                },
-                // updateQuery: (
-                //   previousValue,
-                //   { fetchMoreResult }
-                // ): PostsQuery => {
-                //   if (!fetchMoreResult) {
-                //     return previousValue;
-                //   }
-                //   return {
-                //     __typename: "Query",
-                //     posts: {
-                //       __typename: "PaginatedPosts",
-                //       posts: [
-                //         ...previousValue.posts.posts,
-                //         ...fetchMoreResult.posts.posts,
-                //       ],
-                //       hasMore: fetchMoreResult.posts.hasMore,
-                //     },
-                //   };
-                // },
+              startTransition(() => {
+                fetchMore({
+                  variables: {
+                    limit: PostsLimit,
+                    cursor: posts?.[posts?.length - 1].createdAt!,
+                  },
+                  // updateQuery: (
+                  //   previousValue,
+                  //   { fetchMoreResult }
+                  // ): PostsQuery => {
+                  //   if (!fetchMoreResult) {
+                  //     return previousValue;
+                  //   }
+                  //   return {
+                  //     __typename: "Query",
+                  //     posts: {
+                  //       __typename: "PaginatedPosts",
+                  //       posts: [
+                  //         ...previousValue.posts.posts,
+                  //         ...fetchMoreResult.posts.posts,
+                  //       ],
+                  //       hasMore: fetchMoreResult.posts.hasMore,
+                  //     },
+                  //   };
+                  // },
+                });
               });
             }}
           >

@@ -21,6 +21,7 @@ const Page = () => {
         onSubmit={async (values, {}) => {
           const { errors } = await createPost({
             variables: { postRequest: values },
+            update: (cache) => cache.evict({ fieldName: "posts" }),
           });
           if (!errors) {
             router.push(routes.home);

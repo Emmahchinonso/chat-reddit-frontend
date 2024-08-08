@@ -8,12 +8,13 @@ import { RegularUserFragmentDoc } from "../generate/graphql";
 import { routes } from "../constants/routes";
 import { useRouter } from "next/navigation";
 import Wrapper from "./Wrapper";
+import { useApolloClient } from "@apollo/client";
 
 const Navbar = () => {
   const [logout, { loading: isLoggingOut }] = useLogoutMutation();
   const { data, loading } = useMeQuery();
-  const router = useRouter();
   const user = useFragment(RegularUserFragmentDoc, data?.me);
+  const apolloClient = useApolloClient();
 
   let body: any;
   if (loading) {
@@ -48,9 +49,9 @@ const Navbar = () => {
         </Text>
         <Button
           isLoading={isLoggingOut}
-          onClick={() => {
-            logout({});
-            router.refresh();
+          onClick={async () => {
+            logout();
+            await apolloClient.resetStore();
           }}
           variant="link"
           color="black"

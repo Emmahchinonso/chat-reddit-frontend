@@ -42,9 +42,12 @@ import * as Urql from "urql";
 import {
   ApolloClient,
   QueryHookOptions,
+  SuspenseQueryHookOptions,
   useMutation,
   useQuery,
+  useSuspenseQuery,
 } from "@apollo/client";
+import { IS_CLIENT } from "../constants";
 
 export const useLoginMutation = () => {
   return useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
@@ -61,9 +64,9 @@ export const useMeQuery = (
 };
 
 export const usePostsQuery = (
-  options?: QueryHookOptions<PostsQuery, PostsQueryVariables>
+  options?: SuspenseQueryHookOptions<PostsQuery, PostsQueryVariables>
 ) => {
-  return useQuery<PostsQuery, PostsQueryVariables>(PostsDocument, {
+  return useSuspenseQuery<PostsQuery, PostsQueryVariables>(PostsDocument, {
     ...options,
   });
 };

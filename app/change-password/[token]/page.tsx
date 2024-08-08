@@ -3,7 +3,11 @@ import InputField from "@/app/components/InputField";
 import Wrapper from "@/app/components/Wrapper";
 import { routes } from "@/app/constants/routes";
 import { useFragment } from "@/app/generate";
-import { RegularUserResponseFragmentDoc } from "@/app/generate/graphql";
+import {
+  MeDocument,
+  MeQuery,
+  RegularUserResponseFragmentDoc,
+} from "@/app/generate/graphql";
 import { useChangePasswordMutation } from "@/app/generate/hooks";
 import { toErrormap } from "@/app/utils/toErrorMap";
 import { Box, Button, Flex, Link } from "@chakra-ui/react";
@@ -24,6 +28,19 @@ const ChangePassword = ({ params }: { params: { token: string } }) => {
             variables: {
               newPassword: values.newPassword,
               token: params.token,
+            },
+            update: (cache, { data }) => {
+              const userData = useFragment(
+                RegularUserResponseFragmentDoc,
+                data?.changePassword
+              );
+              cache.writeQuery<MeQuery>({
+                query: MeDocument,
+                data: {
+                  __typename: "Query",
+                  me: userData?.user,
+                },
+              });
             },
           });
           const dataResponse = useFragment(

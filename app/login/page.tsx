@@ -9,7 +9,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { routes } from "../constants/routes";
 import { useLoginMutation } from "../generate/hooks";
 import { useFragment } from "../generate";
-import { RegularUserResponseFragmentDoc } from "../generate/graphql";
+import {
+  MeDocument,
+  MeQuery,
+  RegularUserResponseFragmentDoc,
+} from "../generate/graphql";
 
 const Login = () => {
   const [login, { loading }] = useLoginMutation();
@@ -21,7 +25,23 @@ const Login = () => {
       <Formik
         initialValues={{ usernameOrEmail: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
-          const response = await login({ variables: values });
+          const response = await login({
+            variables: values,
+            update: (cache, { data }) => {
+              const userData = useFragment(
+                RegularUserResponseFragmentDoc,
+                data?.login
+              );
+              cache.writeQuery<MeQuery>({
+                query: MeDocument,
+                data: {
+                  __typename: "Query",
+                  me: userData?.user,
+                },
+              });
+              cache.evict({ fieldName: "posts" });
+            },
+          });
           const dataResponse = useFragment(
             RegularUserResponseFragmentDoc,
             response.data?.login

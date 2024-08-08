@@ -22,7 +22,7 @@ const EditDeleteButton = ({
   const { data: userData } = useMeQuery();
   const user = useFragment(RegularUserFragmentDoc, userData?.me);
 
-  if (user?.id !== authorId) {
+  if (!user || user?.id !== authorId) {
     return null;
   }
 
@@ -34,7 +34,12 @@ const EditDeleteButton = ({
         aria-label="delete post"
         onClick={async () => {
           postRef.current = postId;
-          await deletePost({ variables: { id: postId } });
+          await deletePost({
+            variables: { id: postId },
+            update: (cache) => {
+              cache.evict({ id: `Post:${postId}` });
+            },
+          });
           postRef.current = undefined;
         }}
         isLoading={isDeleting && postRef.current === postId}
